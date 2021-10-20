@@ -500,7 +500,7 @@ class Ui_MainWindow(object):
         self.comboBox_SampleRate.setItemText(0, _translate("MainWindow", "6.25 M"))
         self.comboBox_SampleRate.setItemText(1, _translate("MainWindow", "3.125 M"))
         self.comboBox_SampleRate.setItemText(2, _translate("MainWindow", "1.25 M"))
-        self.comboBox_SampleRate.setItemText(3, _translate("MainWindow", "625  k"))
+        self.comboBox_SampleRate.setItemText(3, _translate("MainWindow", "625 k"))
         self.label_12.setText(_translate("MainWindow", "Samples/Block"))
         self.label_13.setText(_translate("MainWindow", "Mode"))
         self.radioButton_modeBlock.setText(_translate("MainWindow", "Block"))
