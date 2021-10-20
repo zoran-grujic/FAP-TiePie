@@ -172,7 +172,7 @@ class MyUi(Ui_MainWindow):
     def saveData(self, data):
         try:
             now = datetime.now()  # current date and time
-            date_time = now.strftime("%Y%M%d_%H-%M-%S-%f")
+            date_time = now.strftime("%Y%m%d_%H-%M-%S-%f")
             print("date and time:", date_time)
             fn = "data/" + self.lineEdit_FileNamePrefix.text() + date_time
             np.save(fn, data)

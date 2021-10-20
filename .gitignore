@@ -1,3 +1,5 @@
 .idea
 __pycache__
 data
+gui-compile.py
+gui-edit.py
