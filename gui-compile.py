@@ -1,5 +1,7 @@
 """
 Convert ui into py file
+
+Change the path to the 'pyuic5' according to your own environment!
 """
 
 import os
