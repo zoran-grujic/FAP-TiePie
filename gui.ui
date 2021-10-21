@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_data">
        <attribute name="title">
@@ -787,6 +787,12 @@
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_18">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Data start</string>
                  </property>
@@ -794,20 +800,44 @@
                </item>
                <item row="0" column="1">
                 <widget class="QComboBox" name="comboBox_FilterType">
+                 <property name="currentIndex">
+                  <number>1</number>
+                 </property>
                  <item>
                   <property name="text">
-                   <string>Band pass</string>
+                   <string>High pass from 1k</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>High pass</string>
+                   <string>Band pass 1-12k</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Band pass 8-22k</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Band pass 18-32k</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Low pass up to 12k</string>
                   </property>
                  </item>
                 </widget>
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_17">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Type</string>
                  </property>
@@ -815,6 +845,12 @@
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_19">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Data stop</string>
                  </property>
@@ -838,6 +874,12 @@
                </item>
                <item row="3" column="0">
                 <widget class="QLabel" name="label_24">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>FIT start</string>
                  </property>
@@ -845,6 +887,12 @@
                </item>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_25">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>FIT stop</string>
                  </property>

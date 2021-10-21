@@ -140,6 +140,8 @@ class MyUi(Ui_MainWindow):
 
         self.checkBox_SaveData.setStyleSheet("QCheckBox::indicator { width: 70; height: 70;}")
 
+        self.tabWidget.setCurrentIndex(0)
+
         # Execute
         self.scpWorkerStart(self.theWorkerBlocks)
         self.timerPlotSCP.start()
@@ -379,10 +381,28 @@ class MyUi(Ui_MainWindow):
         print(len(decimated), len(self.unFilteredDataFit) / len(decimated))
 
         # filter the data
-        fb1, fb2 = 1000, 10000
+        ciFilter = self.comboBox_FilterType.currentIndex()
+        filRange = 1e3
         filterLength = 301  # must be odd number!!!!!!!!!!!!!!!!!!!!
+        pass_zero = False
+        if ciFilter == 0:  # High pass from 1k
+            filRange = 1e3
+            pass_zero = False
+        elif ciFilter == 1:  # Band pass 1-12k
+            filRange = 1e3, 12e3
+            pass_zero = False
+        elif ciFilter == 2:  # Band pass 8-22k
+            filRange = 8e3, 22e3
+            pass_zero = False
+        elif ciFilter == 3:  # Band pass 18-32k
+            filRange = 18e3, 32e3
+            pass_zero = False
+        elif ciFilter == 4:  # Low pass up to 12k
+            filRange = 12e3
+            pass_zero = True
+
         # drop = int((filterLength - 1) / 2)
-        fltr = signal.firwin(filterLength, [fb1, fb2], pass_zero=False, fs=self.FITSampleRate / 20.)
+        fltr = signal.firwin(filterLength, filRange, pass_zero=pass_zero, fs=self.FITSampleRate / 20.)
 
         filtered = signal.convolve(decimated - np.mean(decimated), fltr, mode='valid')
         self.filteredDataFIT = signal.detrend(filtered, type='constant')
