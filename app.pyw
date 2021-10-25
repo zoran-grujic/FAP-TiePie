@@ -74,7 +74,6 @@ class MyUi(Ui_MainWindow):
     override function of the parent class to connect actions and buttons
     set user interface
     """
-
     def setupUi(self, MainWindow):
         super(MyUi, self).setupUi(MainWindow)  # call function of the parent class
 
@@ -132,15 +131,18 @@ class MyUi(Ui_MainWindow):
         self.FITdataPlotFIT = PG_layout_Tab_2.addPlot()
         PG_layout_Tab_2.nextColumn()
         self.FFTdataPlotFIT = PG_layout_Tab_2.addPlot()
-        self.FFTdataPlotFIT_lr = pg.LinearRegionItem([1000, 3000], hoverBrush=None)
+        self.FFTdataPlotFIT_lr = pg.LinearRegionItem([1500, 3000], hoverBrush=None)
         self.FFTdataPlotFIT_lr.setZValue(10)
-        self.FFTdataPlotFIT_lr.sigRegionChangeFinished.connect(self.updateCR)
+        self.FFTdataPlotFIT_lr.sigRegionChanged.connect(self.updateCRRange)
 
 
         PG_layout_Tab_2.nextRow()
         self.ResidualsDataPlotFIT = PG_layout_Tab_2.addPlot()
         PG_layout_Tab_2.nextColumn()
         self.FFTFilteredDataPlotFIT = PG_layout_Tab_2.addPlot()
+        self.FFTFilteredDataPlotFIT_lr = pg.LinearRegionItem([1500, 3000], hoverBrush=None)
+        self.FFTFilteredDataPlotFIT_lr.setZValue(10)
+        self.FFTFilteredDataPlotFIT_lr.sigRegionChangeFinished.connect(self.updateCR)
 
         self.FITplotWindow_Widget.setCentralItem(PG_layout_Tab_2)
 
@@ -352,6 +354,10 @@ class MyUi(Ui_MainWindow):
             else:
                 self.FITSampleRate = self.scp.scp.sample_frequency
 
+            r = (1500, self.doubleSpinBox_FIT_f0.value() - 500)
+            self.FFTdataPlotFIT_lr.setRegion(r)
+            self.FFTFilteredDataPlotFIT_lr.setRegion(r)
+
             self.fit()
 
     # The fit function must be static
@@ -474,12 +480,17 @@ class MyUi(Ui_MainWindow):
         self.FFTFilteredDataPlotFIT.plot(f, np.sqrt(pxx))
         self.FFTFilteredDataPlotFIT.setLabel('bottom', "Frequency", units="Hz")
         self.FFTFilteredDataPlotFIT.setLabel('left', "PSD filtered", units=vsqrtHztext)
-        self.FFTFilteredDataPlotFIT.addItem(self.FFTdataPlotFIT_lr)
+        self.FFTFilteredDataPlotFIT.addItem(self.FFTFilteredDataPlotFIT_lr)
 
         self.updateCR()  # update also error estimate calc
 
+    def updateCRRange(self):
+        r = self.FFTdataPlotFIT_lr.getRegion()
+        self.FFTFilteredDataPlotFIT_lr.setRegion(r)
+
     def updateCR(self):
-        start, stop = self.FFTdataPlotFIT_lr.getRegion()
+        start, stop = self.FFTFilteredDataPlotFIT_lr.getRegion()
+        self.FFTdataPlotFIT_lr.setRegion([start, stop])
         print(start, stop)
         f, pxx = self.FITlastFFT
         fSel = (f > start) & (f < stop)
@@ -494,7 +505,7 @@ class MyUi(Ui_MainWindow):
         N = T * self.FITSampleRate
         CramerRao, C = cr.cr(A, NSD, T, N, T2=T2)
         print("cr = {:.2e}".format(CramerRao))
-        text = "Freq. range = {:.2f}, {:.2f} Hz\n".format(start, stop)
+        text = "Freq. range = [{:.2f}, {:.2f}] Hz\n".format(start, stop)
         text += "R = {:.2e} V\n".format(A)
         text += "NSD = {:.3e} V/sqrt(Hz)\n".format(NSD)
         text += "C = {:.3e}\n".format(C)
@@ -503,7 +514,6 @@ class MyUi(Ui_MainWindow):
         text += "dB(FAP) = {:.1e} nT/sqrt(Hz)\n".format(CramerRao/7.0)
 
         self.plainTextEdit_SensitivityFFT.setPlainText(text)
-
 
     def genStartStop(self):
         # self.okButton_GeneratorStart.clicked.connect(self.genStartStop)
