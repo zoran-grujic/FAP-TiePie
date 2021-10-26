@@ -437,14 +437,16 @@ class MyUi(Ui_MainWindow):
               self.doubleSpinBox_FIT_B.value(),
               2 * np.pi * self.doubleSpinBox_FIT_Gamma.value(),  # from Hz to rad^-1
               self.doubleSpinBox_FIT_DC.value()]
-        popt, pcov = curve_fit(self.FITfunc, tf/1000., self.filteredDataFIT, p0=p0)
+        popt, pcov = curve_fit(self.FITfunc, tf, self.filteredDataFIT, p0=p0)
         self.lastFIT = [popt, pcov]
         print("popt = ", popt)
-        plainText = "f = {:.4f}\n".format(popt[0])  # +str(popt[0]) + "\n"
-        plainText += "A = {:.2e}\n".format(popt[1])
-        plainText += "B = {:.2e}\n".format(popt[2])
-        plainText += "gamma = {:.2e}\n".format(popt[3]/(2 * np.pi))
-        plainText += "dc = {:.2e}\n".format(popt[4])
+        plainText = "f = {:.4f} Hz\n".format(popt[0])  # +str(popt[0]) + "\n"
+        plainText += "A = {:.2e} V\n".format(popt[1])
+        plainText += "B = {:.2e} V\n".format(popt[2])
+        plainText += "gamma = {:.2e} Hz\n".format(popt[3]/(2 * np.pi))
+        plainText += "dc = {:.2e} V\n".format(popt[4])
+        plainText += "mean = {:.2e} V\n".format(
+            np.mean(self.unFilteredDataFit))
         self.plainTextEdit_FITResults.setPlainText(plainText)
 
         fitCurve = self.FITfunc(tf, *popt)
@@ -499,7 +501,7 @@ class MyUi(Ui_MainWindow):
         print("Noise:", NSD, " V/sqrt(Hz)")
         popt, pcov = self.lastFIT
         A = np.sqrt(popt[1]**2 + popt[2]**2)
-        T2 = popt[3]
+        T2 = 1./popt[3]
 
         T = (self.doubleSpinBox_FilterStop_ms.value() - self.doubleSpinBox_FilterStart_ms.value())/1e3
         N = T * self.FITSampleRate
@@ -509,9 +511,9 @@ class MyUi(Ui_MainWindow):
         text += "R = {:.2e} V\n".format(A)
         text += "NSD = {:.3e} V/sqrt(Hz)\n".format(NSD)
         text += "C = {:.3e}\n".format(C)
-        text += "cr = {:.1e} Hz/sqrt(Hz)\n".format(CramerRao)
-        text += "dB(FSP) = {:.1e} nT/sqrt(Hz)\n".format(CramerRao/3.5)
-        text += "dB(FAP) = {:.1e} nT/sqrt(Hz)\n".format(CramerRao/7.0)
+        text += "cr = {:.1e} Hz\n".format(CramerRao)
+        text += "dB(FSP) = {:.1f} fT\n".format(CramerRao * 1e6/3.5)
+        text += "dB(FAP) = {:.1f} fT\n".format(CramerRao * 1e6/7.0)
 
         self.plainTextEdit_SensitivityFFT.setPlainText(text)
 
