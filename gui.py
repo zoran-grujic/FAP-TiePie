@@ -513,7 +513,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFAP.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.comboBox_SampleRate.setCurrentIndex(1)
         self.comboBox_CH2Range.setCurrentIndex(3)
         self.comboBox_CH1Range.setCurrentIndex(5)

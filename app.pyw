@@ -34,8 +34,8 @@ import libtiepie
 
 # extend Ui_MainWindow class
 class MyUi(Ui_MainWindow):
-    plotWindow = pg.GraphicsWindow()
-    FITplotWindow_Widget = pg.GraphicsWindow()
+    plotWindow = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow() Deprecated
+    FITplotWindow_Widget = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow() Deprecated
     timerPlotSCP = QtCore.QTimer()
     timerStart = QtCore.QTimer()
     rePlotInterval_ms = 100
@@ -107,7 +107,6 @@ class MyUi(Ui_MainWindow):
         self.radioButton_FITSource_CH2.clicked.connect(self.fitUISet)
 
         # make plot widget and layout
-
         containing_layout = self.PlotPlaceholder.parent().layout()
         containing_layout.replaceWidget(self.PlotPlaceholder, self.plotWindow)
         PG_layout = pg.GraphicsLayout()  # make layout for plots
@@ -395,10 +394,10 @@ class MyUi(Ui_MainWindow):
         # filter the data
         detrend = signal.detrend(self.unFilteredDataFit, type='constant')
         decimated = signal.decimate(detrend, 5, ftype='fir')  # reduce sample rate 5x
-        print(len(self.unFilteredDataFit))
-        print(len(decimated), len(self.unFilteredDataFit)/len(decimated))
+        # print(len(self.unFilteredDataFit))
+        # print(len(decimated), len(self.unFilteredDataFit)/len(decimated))
         decimated = signal.decimate(decimated, 4, ftype='fir')  # reduce sample rate 4x
-        print(len(decimated), len(self.unFilteredDataFit) / len(decimated))
+        # print(len(decimated), len(self.unFilteredDataFit) / len(decimated))
 
         # filter the data
         ciFilter = self.comboBox_FilterType.currentIndex()
@@ -465,7 +464,7 @@ class MyUi(Ui_MainWindow):
          detrend='constant', return_onesided=True, 
          scaling='density', axis=- 1)
         """
-        vsqrtHztext = "(V/&radic;<span style='text-decoration:overline;'>&nbsp;Hz&nbsp;</span>)"
+        vsqrtHztext = "V/&radic;<span style='text-decoration:overline;'>&nbsp;Hz&nbsp;</span>"
         f, pxx = signal.periodogram(self.unFilteredDataFit, self.FITSampleRate, window='hann')
         self.FITlastFFT = f, pxx
         self.FFTdataPlotFIT.clear()
