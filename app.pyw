@@ -48,6 +48,7 @@ class MyUi(Ui_MainWindow):
     penX = pg.mkPen(colorX, width=2, style=QtCore.Qt.SolidLine)
     penY = pg.mkPen(colorY, width=2, style=QtCore.Qt.SolidLine)
     penZ = pg.mkPen(colorZ, width=2, style=QtCore.Qt.SolidLine)
+    decimationArr = np.array([5])  # 5,2
 
     """Initialize the app"""
 
@@ -393,19 +394,24 @@ class MyUi(Ui_MainWindow):
 
         # filter the data
         detrend = signal.detrend(self.unFilteredDataFit, type='constant')
+        decimated = detrend
+        for d in self.decimationArr:
+            decimated = signal.decimate(decimated, d, ftype='fir')
+        """
         decimated = signal.decimate(detrend, 5, ftype='fir')  # reduce sample rate 5x
         # print(len(self.unFilteredDataFit))
         # print(len(decimated), len(self.unFilteredDataFit)/len(decimated))
         decimated = signal.decimate(decimated, 4, ftype='fir')  # reduce sample rate 4x
         # print(len(decimated), len(self.unFilteredDataFit) / len(decimated))
+        """
 
         # filter the data
         ciFilter = self.comboBox_FilterType.currentIndex()
         filRange = 1e3
-        filterLength = 301  # must be odd number!!!!!!!!!!!!!!!!!!!!
+        filterLength = 601  # must be odd number!!!!!!!!!!!!!!!!!!!!
         pass_zero = False
         if ciFilter == 0:  # High pass from 1k
-            filRange = 1e3
+            filRange = 10e3
             pass_zero = False
         elif ciFilter == 1:  # Band pass 1-12k
             filRange = 1e3, 12e3
@@ -421,12 +427,12 @@ class MyUi(Ui_MainWindow):
             pass_zero = True
 
         # drop = int((filterLength - 1) / 2)
-        fltr = signal.firwin(filterLength, filRange, pass_zero=pass_zero, fs=self.FITSampleRate / 20.)
+        fltr = signal.firwin(filterLength, filRange, pass_zero=pass_zero, fs=self.FITSampleRate / np.prod(self.decimationArr))
 
         filtered = signal.convolve(decimated - np.mean(decimated), fltr, mode='valid')
         self.filteredDataFIT = signal.detrend(filtered, type='constant')
         n = len(self.filteredDataFIT)
-        tf = np.linspace(0, (n * 20.) / self.FITSampleRate, n, endpoint=False)
+        tf = np.linspace(0, (n * np.prod(self.decimationArr)) / self.FITSampleRate, n, endpoint=False)
 
         # fit of the data
         # curve_fit
@@ -474,7 +480,7 @@ class MyUi(Ui_MainWindow):
         self.FFTdataPlotFIT.setLabel('bottom', "Frequency", units="Hz")
         self.FFTdataPlotFIT.setLabel('left', "PSD", units=vsqrtHztext)
 
-        f, pxx = signal.periodogram(self.filteredDataFIT, self.FITSampleRate/20., window='hann')
+        f, pxx = signal.periodogram(self.filteredDataFIT, self.FITSampleRate/ np.prod(self.decimationArr), window='hann')
 
         self.FFTFilteredDataPlotFIT.clear()
         self.FFTFilteredDataPlotFIT.setLogMode(y=True)
