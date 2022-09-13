@@ -3,6 +3,7 @@
 #  Please feel free to ask me for permission to use my code in your own projects. It is for your own well fare!
 
 import sys
+# pip install python-libtiepie
 import libtiepie
 from array import array
 
