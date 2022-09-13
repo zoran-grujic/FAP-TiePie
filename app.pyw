@@ -189,7 +189,20 @@ class MyUi(Ui_MainWindow):
             date_time = now.strftime("%Y%m%d_%H-%M-%S-%f")
             print("date and time:", date_time)
             fn = "data/" + self.lineEdit_FileNamePrefix.text() + date_time
-            np.save(fn, data)
+            decimated = data
+            if self.comboBox_decimate.currentText() != "None":
+                decFactor = int(self.comboBox_decimate.currentText())
+                if decFactor < 10:
+                    decimationArr = [decFactor]
+                else:
+                    if decFactor < 100:
+                        decimationArr = [10, decFactor/10]
+                    else:
+                        decimationArr = [10, 10, decFactor / 100]
+
+                for d in decimationArr:
+                    decimated = signal.decimate(decimated, d, ftype='fir')
+            np.save(fn, decimated)
             print("File: ", fn)
             return True
         except Exception as e:
