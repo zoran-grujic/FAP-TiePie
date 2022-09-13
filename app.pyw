@@ -192,13 +192,13 @@ class MyUi(Ui_MainWindow):
             decimated = data
             if self.comboBox_decimate.currentText() != "None":
                 decFactor = int(self.comboBox_decimate.currentText())
-                if decFactor < 10:
+                if decFactor <= 10:
                     decimationArr = [decFactor]
                 else:
-                    if decFactor < 100:
-                        decimationArr = [10, decFactor/10]
-                    else:
-                        decimationArr = [10, 10, decFactor / 100]
+                    if decFactor <= 100:
+                        decimationArr = [10, int(decFactor/10)]
+                    else:  # up to 1000
+                        decimationArr = [10, 10, int(decFactor / 100)]
 
                 for d in decimationArr:
                     decimated = signal.decimate(decimated, d, ftype='fir')
