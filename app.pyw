@@ -53,6 +53,7 @@ class MyUi(Ui_MainWindow):
     penZ = pg.mkPen(colorZ, width=2, style=QtCore.Qt.SolidLine)
     decimationArr = np.array([5])  # 5,2
 
+
     """Initialize the app"""
 
     def __init__(self):
@@ -110,6 +111,8 @@ class MyUi(Ui_MainWindow):
         self.radioButton_FITSource_CH1.clicked.connect(self.fitUISet)
         self.radioButton_FITSource_CH2.clicked.connect(self.fitUISet)
         self.pushButton_Set_FIT_init.clicked.connect(self.copyFITtoInit)
+        self.pushButton_SelectFolder.clicked.connect(self.selectFolder)
+        self.lineEdit_FolderName.setText(os.getcwd()+"\\data\\")
 
         # make plot widget and layout
         containing_layout = self.PlotPlaceholder.parent().layout()
@@ -188,7 +191,7 @@ class MyUi(Ui_MainWindow):
             now = datetime.now()  # current date and time
             date_time = now.strftime("%Y%m%d_%H-%M-%S-%f")
             print("date and time:", date_time)
-            fn = "data/" + self.lineEdit_FileNamePrefix.text() + date_time
+            fn = self.lineEdit_FolderName.text() + self.lineEdit_FileNamePrefix.text() + date_time
             decimated = data
             if self.comboBox_decimate.currentText() != "None":
                 decFactor = int(self.comboBox_decimate.currentText())
@@ -558,6 +561,10 @@ class MyUi(Ui_MainWindow):
         text += "dB(FAP) = {:.1f} fT\n".format(CramerRao * 1e6/7.0)
 
         self.plainTextEdit_SensitivityFFT.setPlainText(text)
+
+    def selectFolder(self):
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Folder')
+        self.lineEdit_FolderName.setText(folderpath+"\\")
 
     def genStartStop(self):
         # self.okButton_GeneratorStart.clicked.connect(self.genStartStop)
