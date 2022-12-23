@@ -16,8 +16,9 @@ from QtWorker import Worker
 import sys
 import os
 import logging
-from PyQt5 import QtCore  # conda install pyqt
+from PyQt5 import QtCore  # conda install pyqt // pip install PyQt5==5.15.0
 from PyQt5 import QtWidgets
+from PyQt5 import QtGui
 # pip install pyqtgraph
 import pyqtgraph as pg  # Fast plot package
 import numpy as np
@@ -161,6 +162,8 @@ class MyUi(Ui_MainWindow):
         self.scpWorkerStart(self.theWorkerBlocks)
         self.timerPlotSCP.start()
         # self.genStartStop()
+
+
 
     def scpWorkerStart(self, worker):
 
@@ -603,6 +606,16 @@ class MyUi(Ui_MainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyleSheet(qdarkgraystyle.load_stylesheet())
+
+    # not working, icon set in te Qt Designer
+    # app_icon = QtGui.QIcon()
+    # app_icon.addFile('images/ZG-Speach-Bubble-16x16-icon.png', QtCore.QSize(16, 16))
+    # app_icon.addFile('images/ZG-Speach-Bubble-24x24-icon.png', QtCore.QSize(24, 24))
+    # app_icon.addFile('images/ZG-Speach-Bubble-32x32-icon.png', QtCore.QSize(32, 32))
+    # app_icon.addFile('images/ZG-Speach-Bubble-48x48-icon.png', QtCore.QSize(48, 48))
+    # app_icon.addFile('images/ZG-Speach-Bubble-256x256-icon.png', QtCore.QSize(256, 256))
+    # app.setWindowIcon(app_icon)
+
     MainWindow = QtWidgets.QMainWindow()
     ui = MyUi()
     ui.setupUi(MainWindow)
