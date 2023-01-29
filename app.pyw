@@ -40,6 +40,7 @@ import libtiepie
 class MyUi(Ui_MainWindow):
     plotWindow = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow() Deprecated
     FITplotWindow_Widget = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow() Deprecated
+    monitorPlot_Window = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow()
     timerPlotSCP = QtCore.QTimer()
     timerStart = QtCore.QTimer()
     rePlotInterval_ms = 100
@@ -127,6 +128,7 @@ class MyUi(Ui_MainWindow):
         self.ch2Plot = PG_layout.addPlot()
 
         self.plotWindow.setCentralItem(PG_layout)  # set layout to the widget
+        self.checkBox_SaveData.setStyleSheet("QCheckBox::indicator { width: 70; height: 70;}")
 
         containing_layout = self.FITPlotPlaceholder.parent().layout()
         containing_layout.replaceWidget(self.FITPlotPlaceholder, self.FITplotWindow_Widget)
@@ -154,9 +156,26 @@ class MyUi(Ui_MainWindow):
 
         self.FITplotWindow_Widget.setCentralItem(PG_layout_Tab_2)
 
-        self.checkBox_SaveData.setStyleSheet("QCheckBox::indicator { width: 70; height: 70;}")
+        # make Monitor plot widget
+        containing_layout = self.CH_MonitorPlotPlaceholder.parent().layout()
+        containing_layout.replaceWidget(self.CH_MonitorPlotPlaceholder, self.monitorPlot_Window)
+        PG_layout_Tab_Monitor = pg.GraphicsLayout()  # make layout for plots
 
+        self.monitorPlotCH1 = PG_layout_Tab_Monitor.addPlot()
+        PG_layout_Tab_Monitor.nextRow()
+        self.monitorPlotCH2 = PG_layout_Tab_Monitor.addPlot()
+        PG_layout_Tab_Monitor.nextRow()
+        self.monitorPlotCH3 = PG_layout_Tab_Monitor.addPlot()
+        PG_layout_Tab_Monitor.nextRow()
+        self.monitorPlotCH4 = PG_layout_Tab_Monitor.addPlot()
+
+
+
+        self.monitorPlot_Window.setCentralItem(PG_layout_Tab_Monitor)
+
+        # Set tab index
         self.tabWidget.setCurrentIndex(0)
+
 
         # Execute
         self.scpWorkerStart(self.theWorkerBlocks)
@@ -274,19 +293,28 @@ class MyUi(Ui_MainWindow):
 
         if not self.timerPlotSCP.isActive():
             self.timerPlotSCP.start()
-
+    # not in use?
     def getOscData(self):
         self.scpSet()
         self.SCPData = self.scp.getBlock()
 
+        print("Current tab index: " + str(self.tabWidget.currentIndex()))
+        self.plotSCPMonitor()
         self.plotSCP()
 
     def plotSCP(self):
+
+        if self.tabWidget.currentIndex() == 2: # Monitor tab
+            return self.plotSCPMonitor()
+        if self.tabWidget.currentIndex() != 0:  # Data tab
+            return
+
         if isinstance(self.SCPData, bool):
             return
         samples = len(self.SCPData[0])
         if samples < 10:
             return
+
         sr = self.scp.scp.sample_frequency
         t = np.linspace(0, 1000 * samples / sr, samples, endpoint=False)
 
@@ -300,6 +328,26 @@ class MyUi(Ui_MainWindow):
         self.ch2Plot.setLabel('bottom', "time (ms)")
         self.ch2Plot.setLabel('left', "CH2 (V)")
         self.ch2Plot.plot(t, self.SCPData[1])
+
+    def plotSCPMonitor(self):
+
+        if isinstance(self.SCPData, bool):
+            return
+        samples = len(self.SCPData[0])
+        if samples < 10:
+            return
+        sr = self.scp.scp.sample_frequency
+        t = np.linspace(0, 1000 * samples / sr, samples, endpoint=False)
+
+        plots = [self.monitorPlotCH1,
+                 self.monitorPlotCH2,
+                 self.monitorPlotCH3,
+                 self.monitorPlotCH4]
+        for i in range(self.scp.channels):
+            plots[i].clear()
+            plots[i].setLabel('bottom', "time (ms)")
+            plots[i].setLabel('left', f"CH{i+1} (V)")
+            plots[i].plot(t, self.SCPData[i])
 
     def scpSet(self):
         if not self.scp.set(mode=self.getSCPmode(),

@@ -17,6 +17,8 @@ class oscilloscope:
         "1.25 M": 1250000,
         "625 k": 625000
     }
+    trigger_name = "Generator new period"
+    channels = 0
 
     def __init__(self):
         # Search for devices:
@@ -24,18 +26,40 @@ class oscilloscope:
 
         # Try to open an oscilloscope with block measurement support:
         self.scp = None
+        scps = []
         for item in libtiepie.device_list:
             if item.can_open(libtiepie.DEVICETYPE_OSCILLOSCOPE):
-                self.scp = item.open_oscilloscope()
-                if self.scp.measure_modes & libtiepie.MM_BLOCK:
-                    break
-                else:
-                    scp = None
-        if self.scp is None:
-            print("No oscilloscpe found! Please connect the USB device!")
+                scp = item.open_oscilloscope()
+                if scp.measure_modes & libtiepie.MM_BLOCK:
+                    scps.append(scp)
+                    print('Found: ' + scp.name + ', s/n: ' + str(scp.serial_number))
+
+        if len(scps) == 0:
+            print("Oscilloscpe NOT found! Please connect the USB device!")
             return
+        if len(scps) > 1:
+            try:
+                scp = libtiepie.device_list.create_and_open_combined_device(scps)
+                # Remove scp objects, not required anymore:
+                del scps
+                self.scp = scp
+
+            except Exception as e:
+                print('Exception: ' + e.message)
+                # try with single device
+                self.scp = scps[0]
+                print("Failed to combine instruments!")
+        else:
+            # This is single or combined instrument
+            print("Found single oscilloscope.")
+            self.scp = scps[0]
+
         # available vertical resolutions
-        print(self.scp.resolutions)
+        print("available resolutions: " + str(self.scp.resolutions))
+        # print(self.scp._channels.__dict__)
+        # print(self.scp._channels._get_count())
+        self.channels = self.scp._channels._get_count()
+        print(f"We have {self.channels} channels.")
 
     def set(self,
             mode="block",
@@ -55,15 +79,9 @@ class oscilloscope:
             if mode == "block":
                 self.scp.measure_mode = libtiepie.MM_BLOCK
                 # print("set measure_mode BLOCK")
-                # Locate trigger input:
-                trigger_input = self.scp.trigger_inputs.get_by_id(
-                    libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
 
-                if trigger_input is None:
-                    raise Exception('Unknown trigger input!')
+                self.set_trigger()
 
-                # Enable trigger input:
-                trigger_input.enabled = True
             else:
                 # print("set measure_mode STREAM")
                 self.scp.measure_mode = libtiepie.MM_STREAM
@@ -168,3 +186,36 @@ class oscilloscope:
         except Exception as e:
             pass
         return data
+
+    def set_trigger(self):
+
+        """
+        Combined instrument inputs:
+        inp.id=19923200 inp.name='HS5-540XM(30553).EXT 1'
+        inp.id=19923456 inp.name='HS5-540XM(30553).EXT 2'
+        inp.id=19923712 inp.name='HS5-540XM(30553).EXT 3'
+        inp.id=18874368 inp.name='HS5-540XM(30553).Generator start'
+        inp.id=18874369 inp.name='HS5-540XM(30553).Generator stop'
+        inp.id=18874370 inp.name='HS5-540XM(30553).Generator new period'
+
+        """
+
+        try:
+            # Locate trigger input:
+            trigger_input = self.scp.trigger_inputs.get_by_id(
+                libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
+
+            if trigger_input is None:
+                raise Exception('Unknown trigger input!')
+        except Exception as e:
+            # self.trigger_name = "Generator new period"
+            for trigger_input in self.scp.trigger_inputs:
+                #print(f"{trigger_input.id=} {trigger_input.name= }")
+                if trigger_input.name.split(".")[-1] == self.trigger_name:
+                    break
+
+
+
+
+        # Enable trigger input:
+        trigger_input.enabled = True

@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_data">
        <attribute name="title">
@@ -1229,6 +1229,20 @@ f: 2568.258</string>
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_Monitor">
+       <attribute name="title">
+        <string>CH Monitor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QWidget" name="CH_MonitorPlotPlaceholder" native="true"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -1239,7 +1253,7 @@ f: 2568.258</string>
      <x>0</x>
      <y>0</y>
      <width>1193</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFAP">
