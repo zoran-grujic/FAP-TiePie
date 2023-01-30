@@ -64,72 +64,6 @@
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <layout class="QGridLayout" name="gridLayout">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>Sample rate</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_Samples">
-                 <property name="prefix">
-                  <string># </string>
-                 </property>
-                 <property name="suffix">
-                  <string/>
-                 </property>
-                 <property name="decimals">
-                  <number>0</number>
-                 </property>
-                 <property name="minimum">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>32000000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>312500.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QComboBox" name="comboBox_SampleRate">
-                 <property name="currentIndex">
-                  <number>1</number>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string>6.25 M</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>3.125 M</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>1.25 M</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>625 k</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>Samples/Block</string>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_13">
                  <property name="text">
@@ -161,6 +95,72 @@
                   </layout>
                  </item>
                 </layout>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>Samples/Block</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_SampleRate">
+                 <property name="currentIndex">
+                  <number>1</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>6.25 M</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>3.125 M</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>1.25 M</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>625 k</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_Samples">
+                 <property name="prefix">
+                  <string># </string>
+                 </property>
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="decimals">
+                  <number>0</number>
+                 </property>
+                 <property name="minimum">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>32000000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>312500.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>Sample rate</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -274,6 +274,41 @@
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
                    <layout class="QGridLayout" name="gridLayout_4">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_10">
+                      <property name="text">
+                       <string>Range</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <layout class="QGridLayout" name="gridLayout_6">
+                      <item row="0" column="0">
+                       <widget class="QRadioButton" name="radioButton_CH1AC">
+                        <property name="text">
+                         <string>AC</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QRadioButton" name="radioButton_CH1DC">
+                        <property name="text">
+                         <string>DC</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_11">
+                      <property name="text">
+                       <string>Coupling</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="0" column="1">
                      <widget class="QComboBox" name="comboBox_CH1Range">
                       <property name="currentIndex">
@@ -325,41 +360,6 @@
                        </property>
                       </item>
                      </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label_10">
-                      <property name="text">
-                       <string>Range</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_11">
-                      <property name="text">
-                       <string>Coupling</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <layout class="QGridLayout" name="gridLayout_6">
-                      <item row="0" column="0">
-                       <widget class="QRadioButton" name="radioButton_CH1AC">
-                        <property name="text">
-                         <string>AC</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QRadioButton" name="radioButton_CH1DC">
-                        <property name="text">
-                         <string>DC</string>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
                     </item>
                    </layout>
                   </item>
@@ -1238,6 +1238,410 @@ f: 2568.258</string>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
            <widget class="QWidget" name="CH_MonitorPlotPlaceholder" native="true"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_CH_settings">
+          <item row="0" column="2">
+           <widget class="QGroupBox" name="groupBox_M_CH3">
+            <property name="title">
+             <string>Ch 3</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_41">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_37">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_65">
+                 <property name="text">
+                  <string>Coupling</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_M_CH3Range">
+                 <property name="currentIndex">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0.2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <layout class="QGridLayout" name="gridLayout_38">
+                 <item row="0" column="0">
+                  <widget class="QRadioButton" name="radioButton_M_CH3AC">
+                   <property name="text">
+                    <string>AC</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QRadioButton" name="radioButton_M_CH3DC">
+                   <property name="text">
+                    <string>DC</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_66">
+                 <property name="text">
+                  <string>Range</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QGroupBox" name="groupBox_M_CH4">
+            <property name="title">
+             <string>Ch 4</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_42">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_39">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_67">
+                 <property name="text">
+                  <string>Coupling</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_M_CH4Range">
+                 <property name="currentIndex">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0.2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <layout class="QGridLayout" name="gridLayout_40">
+                 <item row="0" column="0">
+                  <widget class="QRadioButton" name="radioButton_M_CH4AC">
+                   <property name="text">
+                    <string>AC</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QRadioButton" name="radioButton_M_CH4DC">
+                   <property name="text">
+                    <string>DC</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_68">
+                 <property name="text">
+                  <string>Range</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QGroupBox" name="groupBox_M_CH1">
+            <property name="title">
+             <string>CH 1</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_15">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_14">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_30">
+                 <property name="text">
+                  <string>Coupling</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_29">
+                 <property name="text">
+                  <string>Range</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_M_CH1Range">
+                 <property name="currentIndex">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0.2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <layout class="QGridLayout" name="gridLayout_30">
+                 <item row="0" column="0">
+                  <widget class="QRadioButton" name="radioButton_M_CH1AC">
+                   <property name="text">
+                    <string>AC</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QRadioButton" name="radioButton_M_CH1DC">
+                   <property name="text">
+                    <string>DC</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QGroupBox" name="groupBox_M_CH2">
+            <property name="title">
+             <string>CH 2</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_36">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_34">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_63">
+                 <property name="text">
+                  <string>Coupling</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QComboBox" name="comboBox_M_CH2Range">
+                 <property name="currentIndex">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>0.2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>0.8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>20</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>40</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>80</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <layout class="QGridLayout" name="gridLayout_35">
+                 <item row="0" column="0">
+                  <widget class="QRadioButton" name="radioButton_M_CH2AC">
+                   <property name="text">
+                    <string>AC</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QRadioButton" name="radioButton_M_CH2DC">
+                   <property name="text">
+                    <string>DC</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_64">
+                 <property name="text">
+                  <string>Range</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </item>

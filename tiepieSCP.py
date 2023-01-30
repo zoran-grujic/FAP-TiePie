@@ -65,14 +65,13 @@ class oscilloscope:
             mode="block",
             sample_frequency=1e6,
             record_length=1e5,
-            CH1_range=8,
-            CH2_range=2,
-            CH1_coupling="dc",
-            CH2_coupling="dc"):
+            CH_ranges=[8, 2, 2, 2],
+            CH_couplings=["dc", "dc", "dc", "dc"],
+            ):
         if self.scp is None:
             return False
         if self.scp.is_running and self.scp.measure_mode == libtiepie.MM_STREAM:
-            # not controlable
+            # not controllable
             return False
         try:
             # Set measure mode:
@@ -85,7 +84,6 @@ class oscilloscope:
             else:
                 # print("set measure_mode STREAM")
                 self.scp.measure_mode = libtiepie.MM_STREAM
-
 
             # Set sample frequency:
             self.scp.sample_frequency = sample_frequency  # 1 MHz
@@ -101,9 +99,17 @@ class oscilloscope:
             self.scp.pre_sample_ratio = 0  # 0 %
 
             # For all channels:
-            for ch in self.scp.channels:
+            for i, ch in enumerate(self.scp.channels):
                 # Enable channel to measure it:
                 ch.enabled = True
+                # Set range
+                ch.range = CH_ranges[i]
+                # Set coupling
+                if CH_couplings[i] == 'dc':
+                    ch.coupling = libtiepie.CK_DCV # DC Volt
+                else:
+                    ch.coupling = libtiepie.CK_ACV  # AC Volt
+            """   
             CH1 = self.scp.channels[0]
             CH2 = self.scp.channels[1]
 
@@ -120,7 +126,7 @@ class oscilloscope:
                 CH2.coupling = libtiepie.CK_DCV  # DC Volt
             else:
                 CH2.coupling = libtiepie.CK_ACV  # AC Volt
-
+            """
             # Set trigger timeout:
             self.scp.trigger_time_out = 1000e-3  # 100 ms
 

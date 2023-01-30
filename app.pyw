@@ -293,6 +293,7 @@ class MyUi(Ui_MainWindow):
 
         if not self.timerPlotSCP.isActive():
             self.timerPlotSCP.start()
+
     # not in use?
     def getOscData(self):
         self.scpSet()
@@ -353,22 +354,42 @@ class MyUi(Ui_MainWindow):
         if not self.scp.set(mode=self.getSCPmode(),
                             sample_frequency=self.getSampleRate(),
                             record_length=int(self.doubleSpinBox_Samples.value()),
-                            CH1_range=float(self.comboBox_CH1Range.currentText()),
-                            CH2_range=float(self.comboBox_CH2Range.currentText()),
-                            CH1_coupling=self.getCH1coupling(),
-                            CH2_coupling=self.getCH2coupling()
+                            CH_ranges=[
+                                float(self.comboBox_M_CH1Range.currentText()),
+                                float(self.comboBox_M_CH2Range.currentText()),
+                                float(self.comboBox_M_CH3Range.currentText()),
+                                float(self.comboBox_M_CH4Range.currentText())
+                            ],
+                            CH_couplings=[
+                                self.getCH1coupling(),
+                                self.getCH2coupling(),
+                                self.getCH3coupling(),
+                                self.getCH4coupling()
+                            ],
                             ):
             self.statusbar.showMessage("The oscilloscope is not controllable!", 2000)
             print("The oscilloscope is not controllable!")
 
     def getCH1coupling(self):
-        if self.radioButton_CH1DC.isChecked():
+        if self.radioButton_M_CH1DC.isChecked():
             return "dc"
         else:
             return "ac"
 
     def getCH2coupling(self):
-        if self.radioButton_CH2DC.isChecked():
+        if self.radioButton_M_CH2DC.isChecked():
+            return "dc"
+        else:
+            return "ac"
+
+    def getCH3coupling(self):
+        if self.radioButton_M_CH3DC.isChecked():
+            return "dc"
+        else:
+            return "ac"
+
+    def getCH4coupling(self):
+        if self.radioButton_M_CH4DC.isChecked():
             return "dc"
         else:
             return "ac"
