@@ -116,6 +116,17 @@ class MyUi(Ui_MainWindow):
         self.pushButton_SelectFolder.clicked.connect(self.selectFolder)
         self.lineEdit_FolderName.setText(os.getcwd()+"\\data\\")
 
+        # change CH parameters on the data tab
+        elements = [
+            self.comboBox_CH1Range,
+            self.comboBox_CH2Range,
+            self.radioButton_CH1AC,
+            self.radioButton_CH2AC
+        ]
+        for el in elements:
+            self.connectElementTo(el, self.setCH_1_2)
+
+
         # make plot widget and layout
         containing_layout = self.PlotPlaceholder.parent().layout()
         containing_layout.replaceWidget(self.PlotPlaceholder, self.plotWindow)
@@ -164,12 +175,11 @@ class MyUi(Ui_MainWindow):
         self.monitorPlotCH1 = PG_layout_Tab_Monitor.addPlot()
         PG_layout_Tab_Monitor.nextRow()
         self.monitorPlotCH2 = PG_layout_Tab_Monitor.addPlot()
-        PG_layout_Tab_Monitor.nextRow()
-        self.monitorPlotCH3 = PG_layout_Tab_Monitor.addPlot()
-        PG_layout_Tab_Monitor.nextRow()
-        self.monitorPlotCH4 = PG_layout_Tab_Monitor.addPlot()
-
-
+        if(self.scp.channels>2):
+            PG_layout_Tab_Monitor.nextRow()
+            self.monitorPlotCH3 = PG_layout_Tab_Monitor.addPlot()
+            PG_layout_Tab_Monitor.nextRow()
+            self.monitorPlotCH4 = PG_layout_Tab_Monitor.addPlot()
 
         self.monitorPlot_Window.setCentralItem(PG_layout_Tab_Monitor)
 
@@ -339,11 +349,13 @@ class MyUi(Ui_MainWindow):
             return
         sr = self.scp.scp.sample_frequency
         t = np.linspace(0, 1000 * samples / sr, samples, endpoint=False)
+        # print(self.__dict__.get("monitorPlotCH1"))
 
-        plots = [self.monitorPlotCH1,
+        plots = [self.__dict__.get("monitorPlotCH"+str(i+1)) for i in range(self.scp.channels)]
+        """plots = [self.monitorPlotCH1,
                  self.monitorPlotCH2,
                  self.monitorPlotCH3,
-                 self.monitorPlotCH4]
+                 self.monitorPlotCH4]"""
         for i in range(self.scp.channels):
             plots[i].clear()
             plots[i].setLabel('bottom', "time (ms)")
@@ -351,6 +363,14 @@ class MyUi(Ui_MainWindow):
             plots[i].plot(t, self.SCPData[i])
 
     def scpSet(self):
+
+        self.comboBox_CH1Range.setCurrentIndex(self.comboBox_M_CH1Range.currentIndex())
+        self.comboBox_CH2Range.setCurrentIndex(self.comboBox_M_CH2Range.currentIndex())
+        if self.radioButton_M_CH1AC.isChecked() != self.radioButton_CH1AC.isChecked():
+            self.radioButton_CH1AC.toggle()
+        if self.radioButton_M_CH2AC.isChecked() != self.radioButton_CH2AC.isChecked():
+            self.radioButton_CH2AC.toggle()
+
         if not self.scp.set(mode=self.getSCPmode(),
                             sample_frequency=self.getSampleRate(),
                             record_length=int(self.doubleSpinBox_Samples.value()),
@@ -418,6 +438,35 @@ class MyUi(Ui_MainWindow):
         # Execute
         print("Boot SCP")
         self.threadpool.start(self.theWorkerBlocks)
+
+
+    def setCH_1_2(self):
+        # print("setCH_1_2")
+        self.comboBox_M_CH1Range.setCurrentIndex(self.comboBox_CH1Range.currentIndex())
+        self.comboBox_M_CH2Range.setCurrentIndex(self.comboBox_CH2Range.currentIndex())
+        if self.radioButton_CH1AC.isChecked() != self.radioButton_M_CH1AC.isChecked():
+            self.radioButton_M_CH1AC.toggle()
+        if self.radioButton_CH2AC.isChecked() != self.radioButton_M_CH2AC.isChecked():
+            self.radioButton_M_CH2AC.toggle()
+
+
+    def connectElementTo(self, el, function):
+        try:  # dropbox
+            el.currentIndexChanged.connect(function)
+            return
+        except:
+            pass
+        try:  # input text
+            el.valueChanged.connect(function)
+            return
+        except:
+            pass
+        try:  # radio buttons
+            el.toggled.connect(function)
+            return
+        except:
+            pass
+        raise Exception(f"Sorry, {el} not connected with {function}")
 
     def tabChanged(self):
         if self.tabWidget.currentIndex() == 1:
