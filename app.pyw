@@ -55,6 +55,8 @@ class MyUi(Ui_MainWindow):
     penZ = pg.mkPen(colorZ, width=2, style=QtCore.Qt.SolidLine)
     decimationArr = np.array([5])  # 5,2
 
+    countRemainingToSave = 0
+
 
     """Initialize the app"""
 
@@ -86,6 +88,8 @@ class MyUi(Ui_MainWindow):
 
         self.okButton_GeneratorStart.clicked.connect(self.genStartStop)
         self.tabWidget.currentChanged.connect(self.tabChanged)
+
+        self.doubleSpinBox_RecordsToSave.valueChanged.connect(self.saveRecordsChanged)
 
         elements = [self.doubleSpinBox_PumpLevel,
                     self.doubleSpinBox_ProbeLevel,
@@ -285,7 +289,21 @@ class MyUi(Ui_MainWindow):
                 # print("Got SCP data!")
             # print(scp.measure_mode)
             if self.checkBox_SaveData.isChecked():
+                self.doubleSpinBox_RecordsToSave.setDisabled(True)
                 self.saveData(self.SCPData)
+
+                #count remaining to save
+                n = int(self.doubleSpinBox_RecordsToSave.value())
+                if n != 0:
+                    self.countRemainingToSave -= 1
+                    self.label_RemainingToSave.setText("Remaining: " + str(self.countRemainingToSave))
+                    if self.countRemainingToSave <= 0:
+                        self.countRemainingToSave = n
+                        self.checkBox_SaveData.setChecked(False)
+            else:
+                self.doubleSpinBox_RecordsToSave.setDisabled(False)
+                self.label_RemainingToSave.setText("Finished")
+
 
     def plotArb(self, t, y):
 
@@ -439,7 +457,6 @@ class MyUi(Ui_MainWindow):
         print("Boot SCP")
         self.threadpool.start(self.theWorkerBlocks)
 
-
     def setCH_1_2(self):
         # print("setCH_1_2")
         self.comboBox_M_CH1Range.setCurrentIndex(self.comboBox_CH1Range.currentIndex())
@@ -448,7 +465,6 @@ class MyUi(Ui_MainWindow):
             self.radioButton_M_CH1AC.toggle()
         if self.radioButton_CH2AC.isChecked() != self.radioButton_M_CH2AC.isChecked():
             self.radioButton_M_CH2AC.toggle()
-
 
     def connectElementTo(self, el, function):
         try:  # dropbox
@@ -655,6 +671,11 @@ class MyUi(Ui_MainWindow):
 
         for o in toBlock:
             o.blockSignals(False)
+
+    # set save records number
+    def saveRecordsChanged(self):
+        self.countRemainingToSave = int(self.doubleSpinBox_RecordsToSave.value())
+
 
     def updateCR(self):
         start, stop = self.FFTFilteredDataPlotFIT_lr.getRegion()

@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_data">
        <attribute name="title">
@@ -698,7 +698,7 @@
                   <widget class="QPushButton" name="pushButton_SelectFolder">
                    <property name="font">
                     <font>
-                     <pointsize>14</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -791,6 +791,55 @@
                     </size>
                    </property>
                   </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_13">
+                 <item row="0" column="1">
+                  <widget class="QDoubleSpinBox" name="doubleSpinBox_RecordsToSave">
+                   <property name="toolTip">
+                    <string>If 0 it will keep recording until Save unchecked.</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                   <property name="prefix">
+                    <string notr="true">#</string>
+                   </property>
+                   <property name="suffix">
+                    <string notr="true"/>
+                   </property>
+                   <property name="decimals">
+                    <number>0</number>
+                   </property>
+                   <property name="minimum">
+                    <double>0.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>1000000000000.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>100.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_31">
+                   <property name="text">
+                    <string>No records:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_RemainingToSave">
+                   <property name="text">
+                    <string>Remaining</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
