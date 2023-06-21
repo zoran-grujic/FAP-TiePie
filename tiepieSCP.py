@@ -208,9 +208,21 @@ class oscilloscope:
 
         try:
             # Locate trigger input:
+            trName = "HS5(33708).Generator new period"
+            """
+            print("Triggers: ")
+            for trigger_input in self.scp.trigger_inputs:
+                print(trigger_input.__getattribute__("id"))
+                print(trigger_input.__getattribute__("name"))
+                print(trigger_input.name.split(".")[-1])
+            """
+            for trigger_input in self.scp.trigger_inputs:
+                if trigger_input.name.split(".")[-1] == self.trigger_name:
+                    break
+            """
             trigger_input = self.scp.trigger_inputs.get_by_id(
                 libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
-
+            trigger_input = self.scp.trigger_inputs.get_by_id(35651586)
             if trigger_input is None:
                 raise Exception('Unknown trigger input!')
         except Exception as e:
@@ -219,9 +231,14 @@ class oscilloscope:
                 #print(f"{trigger_input.id=} {trigger_input.name= }")
                 if trigger_input.name.split(".")[-1] == self.trigger_name:
                     break
+        """
+        except Exception as e:
+            print("Error finding trigger")
+            print(e)
 
 
 
 
         # Enable trigger input:
         trigger_input.enabled = True
+        # print("Trigger input enabled: "+ str( trigger_input.enabled))
