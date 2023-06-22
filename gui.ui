@@ -1824,6 +1824,44 @@ f: 2568.258</string>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
               <layout class="QGridLayout" name="gridLayout_17">
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasValue">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Set bias voltage here!</string>
+                 </property>
+                 <property name="suffix">
+                  <string>V</string>
+                 </property>
+                 <property name="decimals">
+                  <number>3</number>
+                 </property>
+                 <property name="minimum">
+                  <double>-10.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>10.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.010000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>1.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_32">
+                 <property name="text">
+                  <string>Set probe value</string>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="2">
                 <widget class="QLabel" name="label_ActualProbeValue">
                  <property name="minimumSize">
@@ -1834,13 +1872,6 @@ f: 2568.258</string>
                  </property>
                  <property name="text">
                   <string>Actual probe value</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_32">
-                 <property name="text">
-                  <string>Set probe value</string>
                  </property>
                 </widget>
                </item>
@@ -1873,34 +1904,87 @@ f: 2568.258</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasValue">
+               <item row="1" column="3">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasRange_min">
                  <property name="minimumSize">
                   <size>
-                   <width>200</width>
+                   <width>50</width>
                    <height>0</height>
                   </size>
                  </property>
                  <property name="toolTip">
                   <string>Set bias voltage here!</string>
                  </property>
+                 <property name="prefix">
+                  <string>min </string>
+                 </property>
                  <property name="suffix">
-                  <string>V</string>
+                  <string> V</string>
                  </property>
                  <property name="decimals">
-                  <number>3</number>
+                  <number>1</number>
                  </property>
                  <property name="minimum">
-                  <double>-10.000000000000000</double>
+                  <double>-100.000000000000000</double>
                  </property>
                  <property name="maximum">
-                  <double>10.000000000000000</double>
+                  <double>100.000000000000000</double>
                  </property>
                  <property name="singleStep">
-                  <double>0.010000000000000</double>
+                  <double>0.100000000000000</double>
                  </property>
                  <property name="value">
-                  <double>1.000000000000000</double>
+                  <double>-10.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_ActualProbeValue_2">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Range:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasRange_max">
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Set bias voltage here!</string>
+                 </property>
+                 <property name="prefix">
+                  <string>max </string>
+                 </property>
+                 <property name="suffix">
+                  <string> V</string>
+                 </property>
+                 <property name="decimals">
+                  <number>1</number>
+                 </property>
+                 <property name="minimum">
+                  <double>-100.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>100.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>10.000000000000000</double>
                  </property>
                 </widget>
                </item>

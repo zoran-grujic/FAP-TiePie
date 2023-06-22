@@ -124,6 +124,13 @@ class MyUi(Ui_MainWindow):
                     ]
         for el in elements:
             el.valueChanged.connect(self.fit)
+
+        elements = [self.doubleSpinBox_setBiasRange_min,
+                    self.doubleSpinBox_setBiasRange_max
+                    ]
+        for el in elements:
+            el.valueChanged.connect(self.setBiasRange)
+
         self.comboBox_FilterType.currentIndexChanged.connect(self.fitUISet)
         self.radioButton_FITSource_CH1.clicked.connect(self.fitUISet)
         self.radioButton_FITSource_CH2.clicked.connect(self.fitUISet)
@@ -211,6 +218,7 @@ class MyUi(Ui_MainWindow):
         # self.genStartStop()
 
         self.showDiskSpace()
+        self.setBiasRange()
 
 
 
@@ -274,9 +282,14 @@ class MyUi(Ui_MainWindow):
 
         return False
 
+    def setBiasRange(self):
+        self.doubleSpinBox_setBiasValue.setRange(
+            self.doubleSpinBox_setBiasRange_min.value(),
+            self.doubleSpinBox_setBiasRange_max.value())
+
     def stabilizeProbeLevel(self):
 
-        # print("Stab now!")
+        print("Stab now!")
         # get current probe level
         if self.radioButton_PrStabSourceCH1.isChecked():
             pos = 0
@@ -342,10 +355,6 @@ class MyUi(Ui_MainWindow):
 
             else:
                 # stream mode
-                # no probe stabilisation in stream mode
-                if self.checkBox_ActivateEOMstab.isChecked():
-                    self.checkBox_ActivateEOMstab.setChecked(False)
-                    print("no probe stabilisation in stream mode")
                 # print("Stream mode")
                 if scp.measure_mode == libtiepie.MM_BLOCK:
                     # change from BLOCK to STREAM
