@@ -38,7 +38,8 @@ class arbGenerator:
             self.gen.frequency_mode = libtiepie.FM_SIGNALFREQUENCY  # libtiepie.FM_SAMPLEFREQUENCY
 
             # Set sample frequency:
-            self.gen.frequency = frequency  # 100 kHz
+            self.gen.frequency = frequency  # 10 Hz
+            print(f"{frequency=},  {self.gen.frequency=}")
 
             # Set amplitude:
             self.gen.amplitude = amplitude  # 2 V

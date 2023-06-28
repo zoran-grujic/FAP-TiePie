@@ -60,7 +60,7 @@ class MyUi(Ui_MainWindow):
     penX = pg.mkPen(colorX, width=2, style=QtCore.Qt.SolidLine)
     penY = pg.mkPen(colorY, width=2, style=QtCore.Qt.SolidLine)
     penZ = pg.mkPen(colorZ, width=2, style=QtCore.Qt.SolidLine)
-    decimationArr = np.array([5])  # 5,2
+    decimationArr = np.array([5, 4])  # 5,2
 
     countRemainingToSave = 0
 
@@ -289,7 +289,7 @@ class MyUi(Ui_MainWindow):
 
     def stabilizeProbeLevel(self):
 
-        print("Stab now!")
+        # print("Stab now!")
         # get current probe level
         if self.radioButton_PrStabSourceCH1.isChecked():
             pos = 0
@@ -678,7 +678,7 @@ class MyUi(Ui_MainWindow):
 
         # drop = int((filterLength - 1) / 2)
         tstart = time.perf_counter()
-        fltr = signal.firwin(filterLength, filRange, pass_zero=pass_zero, fs=self.FITSampleRate / np.prod(self.decimationArr))
+        fltr = signal.firwin(filterLength, filRange, window='hamming', pass_zero=pass_zero, fs=self.FITSampleRate / np.prod(self.decimationArr))
 
         filtered = signal.convolve(decimated - np.mean(decimated), fltr, mode='valid')
         self.filteredDataFIT = signal.detrend(filtered, type='constant')
@@ -786,17 +786,23 @@ class MyUi(Ui_MainWindow):
         A = np.sqrt(popt[1]**2 + popt[2]**2)
         T2 = 1./popt[3]
 
+        gain = float(self.lineEdit_transImpGain.text())
+        mean_I = np.mean(self.unFilteredDataFit) / gain  # A
+        NSD_sh = np.sqrt(2 * 1.602e-19 * mean_I)  # shot noise A/sqrt Hz
+
         T = (self.doubleSpinBox_FilterStop_ms.value() - self.doubleSpinBox_FilterStart_ms.value())/1e3
         N = T * self.FITSampleRate
+        CramerRao_sh, C = cr.cr(A/gain, NSD_sh, T, N, T2=T2)
         CramerRao, C = cr.cr(A, NSD, T, N, T2=T2)
         print("cr = {:.2e}".format(CramerRao))
         text = "Freq. range = [{:.2f}, {:.2f}] Hz\n".format(start, stop)
         text += "R = {:.2e} V\n".format(A)
         text += "NSD = {:.3e} V/sqrt(Hz)\n".format(NSD)
+        text += f"NSD_sh = {NSD_sh:.3e} V/sqrt(Hz) (shot noise)\n"
         text += "C = {:.3e}\n".format(C)
         text += "cr = {:.1e} Hz\n".format(CramerRao)
-        text += "dB(FSP) = {:.1f} fT\n".format(CramerRao * 1e6/3.5)
-        text += "dB(FAP) = {:.1f} fT\n".format(CramerRao * 1e6/7.0)
+        text += f"dB(FSP) = {CramerRao * 1e6/3.5:.1f} fT ({CramerRao_sh * 1e6/3.5:.1f})\n"
+        text += f"dB(FAP) = {CramerRao * 1e6/7.0:.1f} fT ({CramerRao_sh * 1e6/7.0:.1f})\n"
 
         self.plainTextEdit_SensitivityFFT.setPlainText(text)
 
@@ -839,6 +845,11 @@ class MyUi(Ui_MainWindow):
                          )
         arb = arbObj.arb()
         t, y = arb
+        if not len(y) == int(self.doubleSpinBox_Points.value()):
+            print("Arb length is wrong!")
+            print(f"{len(y)=}  == points={int(self.doubleSpinBox_Points.value())}")
+        else:
+            print(f"{len(y)=}  == points={int(self.doubleSpinBox_Points.value())}")
         if not self.gen.arbLoad(y,
                                 amplitude=max(y),
                                 frequency=1000 / float(self.doubleSpinBox_TotalTime_ms.value())):

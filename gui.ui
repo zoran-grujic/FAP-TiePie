@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_data">
        <attribute name="title">
@@ -410,7 +410,7 @@
                   <double>0.100000000000000</double>
                  </property>
                  <property name="value">
-                  <double>0.500000000000000</double>
+                  <double>0.300000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -579,7 +579,7 @@
                   <double>0.010000000000000</double>
                  </property>
                  <property name="value">
-                  <double>5.000000000000000</double>
+                  <double>4.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -884,40 +884,8 @@
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
               <layout class="QGridLayout" name="gridLayout_9">
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStart_ms">
-                 <property name="suffix">
-                  <string> ms</string>
-                 </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>30.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStop_ms">
-                 <property name="suffix">
-                  <string> ms</string>
-                 </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>100.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_18">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -925,7 +893,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Data start</string>
+                  <string>Type</string>
                  </property>
                 </widget>
                </item>
@@ -961,29 +929,35 @@
                  </item>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStop_ms">
+                 <property name="suffix">
+                  <string> ms</string>
                  </property>
-                 <property name="text">
-                  <string>Type</string>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>100.000000000000000</double>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_19">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
+               <item row="2" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStop_ms">
+                 <property name="suffix">
+                  <string> ms</string>
                  </property>
-                 <property name="text">
-                  <string>Data stop</string>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>100.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -1003,8 +977,24 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_24">
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStart_ms">
+                 <property name="suffix">
+                  <string> ms</string>
+                 </property>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>30.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_19">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -1012,7 +1002,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>FIT start</string>
+                  <string>Data stop</string>
                  </property>
                 </widget>
                </item>
@@ -1029,19 +1019,52 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStop_ms">
-                 <property name="suffix">
-                  <string> ms</string>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
+                 <property name="text">
+                  <string>Data start</string>
                  </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_24">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="value">
-                  <double>100.000000000000000</double>
+                 <property name="text">
+                  <string>FIT start</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_34">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Transimp. gain</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="lineEdit_transImpGain">
+                 <property name="toolTip">
+                  <string>Transimpedance gain [V/A] in scientific format.</string>
+                 </property>
+                 <property name="text">
+                  <string>1e6</string>
                  </property>
                 </widget>
                </item>
@@ -1851,7 +1874,7 @@ f: 2568.258</string>
                   <double>0.010000000000000</double>
                  </property>
                  <property name="value">
-                  <double>1.000000000000000</double>
+                  <double>-1.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -1893,7 +1916,7 @@ f: 2568.258</string>
                   <double>0.010000000000000</double>
                  </property>
                  <property name="value">
-                  <double>0.700000000000000</double>
+                  <double>0.550000000000000</double>
                  </property>
                 </widget>
                </item>
