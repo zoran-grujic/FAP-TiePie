@@ -76,8 +76,12 @@ class MyUi(Ui_MainWindow):
 
         self.dialogs = list()
 
-        self.gen = arbGenerator()
         self.scp = oscilloscope()
+        print(self.scp.scp_list_sn)
+        gen_sn = self.scp.scp_list_sn[0]
+        print(f"Selected generator SN: {gen_sn}")
+        self.gen = arbGenerator(gen_sn)
+
 
         self.threadpool = QThreadPool()
         self.theWorkerBlocks = Worker(self.getBlocks)  # Any other args, kwargs are passed to the run function
@@ -134,6 +138,8 @@ class MyUi(Ui_MainWindow):
         self.comboBox_FilterType.currentIndexChanged.connect(self.fitUISet)
         self.radioButton_FITSource_CH1.clicked.connect(self.fitUISet)
         self.radioButton_FITSource_CH2.clicked.connect(self.fitUISet)
+        self.radioButton_FITSource_CH3.clicked.connect(self.fitUISet)
+        self.radioButton_FITSource_CH4.clicked.connect(self.fitUISet)
         self.pushButton_Set_FIT_init.clicked.connect(self.copyFITtoInit)
         self.pushButton_SelectFolder.clicked.connect(self.selectFolder)
         self.lineEdit_FolderName.setText(os.getcwd()+"\\data\\")
@@ -294,14 +300,20 @@ class MyUi(Ui_MainWindow):
         if self.radioButton_PrStabSourceCH1.isChecked():
             pos = 0
         else:
-            pos = 1
+            if self.radioButton_PrStabSourceCH2.isChecked():
+                pos = 1
+            else:
+                if self.radioButton_PrStabSourceCH3.isChecked():
+                    pos = 2
+                else:
+                    pos = 3
 
         try:
             signalData = self.SCPData[pos]
         except:
             return
         probeValue = np.mean(signalData[-3000:-100])
-        self.label_ActualProbeValue.setText(f"{probeValue:0.3f} V")
+        self.label_ActualProbeValue.setText(f"{probeValue:0.6f} V")
 
         if self.checkBox_ActivateEOMstab.isChecked():
             error = self.doubleSpinBox_setProbeValue.value() -probeValue
@@ -621,8 +633,12 @@ class MyUi(Ui_MainWindow):
 
         if self.radioButton_FITSource_CH1.isChecked():
             self.dataFIT = self.dataSCPtoFITtab[0]
-        else:
+        if self.radioButton_FITSource_CH2.isChecked():
             self.dataFIT = self.dataSCPtoFITtab[1]
+        if self.radioButton_FITSource_CH3.isChecked():
+            self.dataFIT = self.dataSCPtoFITtab[2]
+        if self.radioButton_FITSource_CH4.isChecked():
+            self.dataFIT = self.dataSCPtoFITtab[3]
         totalTime_ms = float(self.doubleSpinBox_FITStop_ms.value())
         t = np.linspace(0, totalTime_ms, len(self.dataFIT), endpoint=False)
 

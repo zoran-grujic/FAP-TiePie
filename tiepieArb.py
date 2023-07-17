@@ -10,21 +10,30 @@ from array import array
 
 class arbGenerator:
 
-    def __init__(self):
+    def __init__(self, sn=None):
         # Search for devices:
         libtiepie.device_list.update()
 
         # Try to open a generator with arbitrary support:
         self.gen = None
         for item in libtiepie.device_list:
+
             if item.can_open(libtiepie.DEVICETYPE_GENERATOR):
-                self.gen = item.open_generator()
+                if sn is None:
+                    self.gen = item.open_generator()
+                else:
+                    if sn == item.serial_number:
+                        self.gen = item.open_generator()
+
                 if self.gen.signal_types & libtiepie.ST_ARBITRARY:
                     break
                 else:
                     self.gen = None
         if self.gen is None:
             print("No generator detected! Connect the USB device!")
+        else:
+            #get S/N
+            print(item)
 
     def arbLoad(self, arb, amplitude=1, frequency=10, offset=0.0):
         if self.gen is None:
@@ -74,3 +83,12 @@ class arbGenerator:
         self.gen.output_on = False
         print("Generator STOP")
 
+
+if __name__.endswith('__main__'):
+    gen = arbGenerator()
+    print(gen.gen.__dict__.keys())
+    print(gen.gen._trigger_outputs)
+    for t in gen.gen._trigger_outputs:
+        print(t.name)
+
+    #print(gen.gen.IDKIND_SERIALNUMBER)

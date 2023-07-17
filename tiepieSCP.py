@@ -19,6 +19,7 @@ class oscilloscope:
     }
     trigger_name = "Generator new period"
     channels = 0
+    scp_list_sn =[]
 
     def __init__(self):
         # Search for devices:
@@ -26,6 +27,13 @@ class oscilloscope:
 
         # Try to open an oscilloscope with block measurement support:
         self.scp = None
+        self.scp_list_sn=[]
+        for item in libtiepie.device_list:
+            print(item.name)
+            print(item.serial_number)
+            if "Handyscope HS5" == item.name.split("-")[0]:
+                self.scp_list_sn.append(item.serial_number)
+
         scps = []
         for item in libtiepie.device_list:
             if item.can_open(libtiepie.DEVICETYPE_OSCILLOSCOPE):
@@ -60,6 +68,8 @@ class oscilloscope:
         # print(self.scp._channels._get_count())
         self.channels = self.scp._channels._get_count()
         print(f"We have {self.channels} channels.")
+
+
 
     def set(self,
             mode="block",
@@ -208,7 +218,7 @@ class oscilloscope:
 
         try:
             # Locate trigger input:
-            trName = "HS5(33708).Generator new period"
+            tr_sn = self.scp_list_sn[0]  # First SN available
             """
             print("Triggers: ")
             for trigger_input in self.scp.trigger_inputs:
@@ -217,8 +227,11 @@ class oscilloscope:
                 print(trigger_input.name.split(".")[-1])
             """
             for trigger_input in self.scp.trigger_inputs:
+                #print(trigger_input.name)
                 if trigger_input.name.split(".")[-1] == self.trigger_name:
-                    break
+                    if str(tr_sn) in trigger_input.name.split(".")[-1]:
+                        break
+
             """
             trigger_input = self.scp.trigger_inputs.get_by_id(
                 libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
