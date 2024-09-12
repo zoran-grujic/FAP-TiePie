@@ -27,12 +27,11 @@ def white_noise(rho, sr, n, mu=0):
 A - amplitude
 NSD - Noise Spectral Density
 T - Period of acquisition
-T2 - Relaxation rate
+T2 - Inverse relaxation rate
 N - Number of samples
 ret - sigma, sigma2, C
 return: STD, C
 """
-
 
 def cr(A, NSD, T, N, T2=0):
     if T2 == 0:

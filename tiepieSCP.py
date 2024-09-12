@@ -19,7 +19,6 @@ class oscilloscope:
     }
     trigger_name = "Generator new period"
     channels = 0
-    scp_list_sn =[]
 
     def __init__(self):
         # Search for devices:
@@ -27,13 +26,6 @@ class oscilloscope:
 
         # Try to open an oscilloscope with block measurement support:
         self.scp = None
-        self.scp_list_sn=[]
-        for item in libtiepie.device_list:
-            print(item.name)
-            print(item.serial_number)
-            if "Handyscope HS5" == item.name.split("-")[0]:
-                self.scp_list_sn.append(item.serial_number)
-
         scps = []
         for item in libtiepie.device_list:
             if item.can_open(libtiepie.DEVICETYPE_OSCILLOSCOPE):
@@ -69,11 +61,9 @@ class oscilloscope:
         self.channels = self.scp._channels._get_count()
         print(f"We have {self.channels} channels.")
 
-
-
     def set(self,
             mode="block",
-            sample_frequency=1e6,
+            sample_rate=1e6,
             record_length=1e5,
             CH_ranges=[8, 2, 2, 2],
             CH_couplings=["dc", "dc", "dc", "dc"],
@@ -95,18 +85,18 @@ class oscilloscope:
                 # print("set measure_mode STREAM")
                 self.scp.measure_mode = libtiepie.MM_STREAM
 
-            # Set sample frequency:
-            self.scp.sample_frequency = sample_frequency  # 1 MHz
-
             # set vertical resolution
             self.scp.resolution = 16  # set 16 bit vertical resolution
-            # print("Sample frequency SET to:", self.scp.sample_frequency)
+            # print("Sample frequency SET to:", self.scp.sample_rate)
 
             # Set record length:
             self.scp.record_length = int(record_length)  # 10000 samples
 
             # Set pre sample ratio:
             self.scp.pre_sample_ratio = 0  # 0 %
+
+            # Set sample frequency:
+            self.scp.sample_rate = sample_rate  # 1 MHz
 
             # For all channels:
             for i, ch in enumerate(self.scp.channels):
@@ -138,7 +128,7 @@ class oscilloscope:
                 CH2.coupling = libtiepie.CK_ACV  # AC Volt
             """
             # Set trigger timeout:
-            self.scp.trigger_time_out = 1000e-3  # 100 ms
+            self.scp.trigger.timeout = 1000e-3  # 100 ms
 
             # Disable all channel trigger sources:
             for ch in self.scp.channels:
@@ -218,24 +208,11 @@ class oscilloscope:
 
         try:
             # Locate trigger input:
-            tr_sn = self.scp_list_sn[0]  # First SN available
-            """
-            print("Triggers: ")
-            for trigger_input in self.scp.trigger_inputs:
-                print(trigger_input.__getattribute__("id"))
-                print(trigger_input.__getattribute__("name"))
-                print(trigger_input.name.split(".")[-1])
-            """
-            for trigger_input in self.scp.trigger_inputs:
-                #print(trigger_input.name)
-                if trigger_input.name.split(".")[-1] == self.trigger_name:
-                    if str(tr_sn) in trigger_input.name.split(".")[-1]:
-                        break
-
-            """
             trigger_input = self.scp.trigger_inputs.get_by_id(
                 libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
-            trigger_input = self.scp.trigger_inputs.get_by_id(35651586)
+            # Set trigger timeout:
+            self.scp.trigger.timeout = 1000e-3  # 100 ms
+
             if trigger_input is None:
                 raise Exception('Unknown trigger input!')
         except Exception as e:
@@ -244,14 +221,9 @@ class oscilloscope:
                 #print(f"{trigger_input.id=} {trigger_input.name= }")
                 if trigger_input.name.split(".")[-1] == self.trigger_name:
                     break
-        """
-        except Exception as e:
-            print("Error finding trigger")
-            print(e)
 
 
 
 
         # Enable trigger input:
         trigger_input.enabled = True
-        # print("Trigger input enabled: "+ str( trigger_input.enabled))

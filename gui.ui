@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1193</width>
+    <width>1197</width>
     <height>869</height>
    </rect>
   </property>
@@ -151,7 +151,7 @@
                   <double>1.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>312500.000000000000000</double>
+                  <double>156250.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -379,6 +379,28 @@
             <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
              <item>
               <layout class="QGridLayout" name="gridLayout_2">
+               <item row="3" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_ZeroLevel">
+                 <property name="suffix">
+                  <string> V</string>
+                 </property>
+                 <property name="decimals">
+                  <number>4</number>
+                 </property>
+                 <property name="minimum">
+                  <double>-10.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>10.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.001000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>0.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="1">
                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Frequency_Hz">
                  <property name="suffix">
@@ -391,7 +413,37 @@
                   <double>5.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>7000.000000000000000</double>
+                  <double>13746.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_TotalTime_ms">
+                 <property name="suffix">
+                  <string> ms</string>
+                 </property>
+                 <property name="maximum">
+                  <double>5000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>50.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Frequency</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Points</string>
                  </property>
                 </widget>
                </item>
@@ -410,23 +462,14 @@
                   <double>0.100000000000000</double>
                  </property>
                  <property name="value">
-                  <double>0.300000000000000</double>
+                  <double>0.500000000000000</double>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="3">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_TotalTime_ms">
-                 <property name="suffix">
-                  <string> ms</string>
-                 </property>
-                 <property name="maximum">
-                  <double>5000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>100.000000000000000</double>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Cycle total time</string>
                  </property>
                 </widget>
                </item>
@@ -437,31 +480,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Frequency</string>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="2">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>Pump time</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Points</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Cycle total time</string>
                  </property>
                 </widget>
                </item>
@@ -477,7 +499,7 @@
                   <double>1.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>30.000000000000000</double>
+                  <double>15.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -503,28 +525,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_ZeroLevel">
-                 <property name="suffix">
-                  <string> V</string>
-                 </property>
-                 <property name="decimals">
-                  <number>4</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-10.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>10.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.010000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>0.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="1">
                 <widget class="QDoubleSpinBox" name="doubleSpinBox_ProbeLevel">
                  <property name="suffix">
@@ -547,6 +547,35 @@
                  </property>
                 </widget>
                </item>
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_PumpLevel">
+                 <property name="suffix">
+                  <string> V</string>
+                 </property>
+                 <property name="decimals">
+                  <number>4</number>
+                 </property>
+                 <property name="minimum">
+                  <double>-10.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>10.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.001000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>1.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Zero level</string>
+                 </property>
+                </widget>
+               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_7">
                  <property name="text">
@@ -561,8 +590,11 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_PumpLevel">
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_ExpAmplitude">
+                 <property name="toolTip">
+                  <string>Exponential amplitude. Set to 0 to turn off.</string>
+                 </property>
                  <property name="suffix">
                   <string> V</string>
                  </property>
@@ -579,14 +611,43 @@
                   <double>0.010000000000000</double>
                  </property>
                  <property name="value">
-                  <double>4.000000000000000</double>
+                  <double>0.000000000000000</double>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_8">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_32">
                  <property name="text">
-                  <string>Zero level</string>
+                  <string>Exp. amplitude</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <widget class="QLabel" name="label_33">
+                 <property name="text">
+                  <string>Exp. relaxation</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="3">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_ExpRelaxation">
+                 <property name="toolTip">
+                  <string>Exponential relaxation rate</string>
+                 </property>
+                 <property name="suffix">
+                  <string>k rad/s</string>
+                 </property>
+                 <property name="decimals">
+                  <number>4</number>
+                 </property>
+                 <property name="maximum">
+                  <double>500.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>87.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -884,8 +945,8 @@
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
               <layout class="QGridLayout" name="gridLayout_9">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_18">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -893,7 +954,52 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Type</string>
+                  <string>Data start</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_19">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Data stop</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStart_ms">
+                 <property name="suffix">
+                  <string> ms</string>
+                 </property>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>30.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStop_ms">
+                 <property name="suffix">
+                  <string> ms</string>
+                 </property>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>100.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -929,51 +1035,22 @@
                  </item>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStop_ms">
+               <item row="5" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_TransImp_Gain">
+                 <property name="toolTip">
+                  <string>Used for Shot noise calculation only when conversion from V to A is required.</string>
+                 </property>
                  <property name="suffix">
-                  <string> ms</string>
+                  <string> V/A</string>
                  </property>
                  <property name="maximum">
-                  <double>1000.000000000000000</double>
+                  <double>100000000.000000000000000</double>
                  </property>
                  <property name="singleStep">
-                  <double>0.100000000000000</double>
+                  <double>1.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>100.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStop_ms">
-                 <property name="suffix">
-                  <string> ms</string>
-                 </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>100.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_FITStart_ms">
-                 <property name="suffix">
-                  <string> ms</string>
-                 </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>30.000000000000000</double>
+                  <double>1000000.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -993,19 +1070,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_19">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Data stop</string>
-                 </property>
-                </widget>
-               </item>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_25">
                  <property name="sizePolicy">
@@ -1016,32 +1080,6 @@
                  </property>
                  <property name="text">
                   <string>FIT stop</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_18">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Data start</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_24">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>FIT start</string>
                  </property>
                 </widget>
                </item>
@@ -1058,13 +1096,83 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
-                <widget class="QLineEdit" name="lineEdit_transImpGain">
-                 <property name="toolTip">
-                  <string>Transimpedance gain [V/A] in scientific format.</string>
+               <item row="2" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_FilterStop_ms">
+                 <property name="suffix">
+                  <string> ms</string>
+                 </property>
+                 <property name="maximum">
+                  <double>1000.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.100000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>100.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>1e6</string>
+                  <string>Type</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_24">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>FIT start</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_SignalOffset">
+                 <property name="toolTip">
+                  <string>Used for Shot noise calculation only. It indicates voltage substracted from the signal before oscilloscope.</string>
+                 </property>
+                 <property name="suffix">
+                  <string> V</string>
+                 </property>
+                 <property name="decimals">
+                  <number>3</number>
+                 </property>
+                 <property name="minimum">
+                  <double>-10.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>10.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.001000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>0.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_35">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Signal Offset</string>
                  </property>
                 </widget>
                </item>
@@ -1102,24 +1210,6 @@
                 <widget class="QRadioButton" name="radioButton_FITSource_CH2">
                  <property name="text">
                   <string>CH2</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_12">
-               <item>
-                <widget class="QRadioButton" name="radioButton_FITSource_CH3">
-                 <property name="text">
-                  <string>CH3</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="radioButton_FITSource_CH4">
-                 <property name="text">
-                  <string>CH4</string>
                  </property>
                 </widget>
                </item>
@@ -1287,15 +1377,9 @@ f: 2568.258</string>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QPushButton" name="pushButton_FIT_Realtime">
-              <property name="toolTip">
-               <string>Not implemented</string>
-              </property>
+             <widget class="QPushButton" name="pushButton">
               <property name="text">
-               <string>Fit contineously</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
+               <string>Not implemented</string>
               </property>
              </widget>
             </item>
@@ -1750,460 +1834,6 @@ f: 2568.258</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_EOM">
-       <attribute name="title">
-        <string>EOM stab.</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_16">
-        <item>
-         <layout class="QGridLayout" name="gridLayout_16">
-          <item row="0" column="1">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="checkBox_ActivateEOMstab">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Activate EOM stabilization</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>50</width>
-              <height>50</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item>
-           <widget class="QGroupBox" name="groupBox_5">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>50</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Select Input</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
-             <item>
-              <widget class="QRadioButton" name="radioButton_PrStabSourceCH1">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>CH1</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_PrStabSourceCH2">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>CH2</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_PrStabSourceCH3">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>CH3</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_PrStabSourceCH4">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>CH4</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QGroupBox" name="groupBox_9">
-            <property name="title">
-             <string>Set point</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <layout class="QGridLayout" name="gridLayout_17">
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasValue">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Set bias voltage here!</string>
-                 </property>
-                 <property name="suffix">
-                  <string>V</string>
-                 </property>
-                 <property name="decimals">
-                  <number>8</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-10.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>10.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.010000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-1.500000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_32">
-                 <property name="text">
-                  <string>Set probe value</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QLabel" name="label_ActualProbeValue">
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Actual probe value</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_setProbeValue">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="suffix">
-                  <string>V</string>
-                 </property>
-                 <property name="decimals">
-                  <number>8</number>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.010000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>0.550000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_33">
-                 <property name="text">
-                  <string>Set bias value</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="3">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasRange_min">
-                 <property name="minimumSize">
-                  <size>
-                   <width>50</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Set bias voltage here!</string>
-                 </property>
-                 <property name="prefix">
-                  <string>min </string>
-                 </property>
-                 <property name="suffix">
-                  <string> V</string>
-                 </property>
-                 <property name="decimals">
-                  <number>1</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-100.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>100.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-10.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QLabel" name="label_ActualProbeValue_2">
-                 <property name="minimumSize">
-                  <size>
-                   <width>100</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Range:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="4">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_setBiasRange_max">
-                 <property name="minimumSize">
-                  <size>
-                   <width>50</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Set bias voltage here!</string>
-                 </property>
-                 <property name="prefix">
-                  <string>max </string>
-                 </property>
-                 <property name="suffix">
-                  <string> V</string>
-                 </property>
-                 <property name="decimals">
-                  <number>1</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-100.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>100.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>10.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
-          <item>
-           <widget class="QGroupBox" name="groupBox_11">
-            <property name="title">
-             <string>Loop parameters</string>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
-             <item>
-              <layout class="QGridLayout" name="gridLayout_20">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_35">
-                 <property name="text">
-                  <string>Correction factor</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_ProbeLevelCorrectionFactor">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>error * correction factor + old</string>
-                 </property>
-                 <property name="suffix">
-                  <string>mV/V</string>
-                 </property>
-                 <property name="minimum">
-                  <double>-1000.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>1000.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-100.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_ProbeValueTolerance">
-                 <property name="minimumSize">
-                  <size>
-                   <width>200</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>If with in tolerance no correction will be applied</string>
-                 </property>
-                 <property name="suffix">
-                  <string>%</string>
-                 </property>
-                 <property name="decimals">
-                  <number>1</number>
-                 </property>
-                 <property name="singleStep">
-                  <double>0.100000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>3.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_36">
-                 <property name="text">
-                  <string>Tolerance</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QCheckBox" name="checkBox_useTolerance">
-                 <property name="toolTip">
-                  <string>If checked no correction to bias will be applied if within +/- tolerance.</string>
-                 </property>
-                 <property name="text">
-                  <string>Use tolerance?</string>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -2213,7 +1843,7 @@ f: 2568.258</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1193</width>
+     <width>1197</width>
      <height>26</height>
     </rect>
    </property>
@@ -2221,6 +1851,8 @@ f: 2568.258</string>
     <property name="title">
      <string>FAP</string>
     </property>
+    <addaction name="actionSave_settings"/>
+    <addaction name="actionLoad_settings"/>
    </widget>
    <addaction name="menuFAP"/>
   </widget>
@@ -2232,6 +1864,16 @@ f: 2568.258</string>
     <string/>
    </property>
   </widget>
+  <action name="actionSave_settings">
+   <property name="text">
+    <string>Save settings</string>
+   </property>
+  </action>
+  <action name="actionLoad_settings">
+   <property name="text">
+    <string>Load settings</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

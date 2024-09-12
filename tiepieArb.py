@@ -10,30 +10,25 @@ from array import array
 
 class arbGenerator:
 
-    def __init__(self, sn=None):
+    def __init__(self):
+        # Enable network search:
+        libtiepie.network.auto_detect_enabled = True
+
         # Search for devices:
         libtiepie.device_list.update()
 
         # Try to open a generator with arbitrary support:
         self.gen = None
         for item in libtiepie.device_list:
-
+            print(item)
             if item.can_open(libtiepie.DEVICETYPE_GENERATOR):
-                if sn is None:
-                    self.gen = item.open_generator()
-                else:
-                    if sn == item.serial_number:
-                        self.gen = item.open_generator()
-
+                self.gen = item.open_generator()
                 if self.gen.signal_types & libtiepie.ST_ARBITRARY:
                     break
                 else:
                     self.gen = None
         if self.gen is None:
             print("No generator detected! Connect the USB device!")
-        else:
-            #get S/N
-            print(item)
 
     def arbLoad(self, arb, amplitude=1, frequency=10, offset=0.0):
         if self.gen is None:
@@ -44,11 +39,11 @@ class arbGenerator:
             self.gen.signal_type = libtiepie.ST_ARBITRARY
 
             # Select frequency mode:
-            self.gen.frequency_mode = libtiepie.FM_SIGNALFREQUENCY  # libtiepie.FM_SAMPLEFREQUENCY
+            self.gen.frequency_mode = libtiepie.FM_SIGNALFREQUENCY  # libtiepie.FM_SAMPLEFREQUENCY  FM_SIGNALFREQUENCY
+            #print(f" gen {frequency=}")
 
             # Set sample frequency:
-            self.gen.frequency = frequency  # 10 Hz
-            print(f"{frequency=},  {self.gen.frequency=}")
+            self.gen.frequency = frequency  # 100 kHz
 
             # Set amplitude:
             self.gen.amplitude = amplitude  # 2 V
@@ -65,10 +60,11 @@ class arbGenerator:
 
     def start(self):
         if self.gen is None:
+            print("Gen is none TiePieArb.py")
             return
 
         # Enable output:
-        self.gen.output_on = True
+        self.gen.output_enable = True
         # Start signal generation:
         self.gen.start()
         print("Generator started")
@@ -80,15 +76,6 @@ class arbGenerator:
         self.gen.stop()
 
         # Disable output:
-        self.gen.output_on = False
+        self.gen.output_enable = False
         print("Generator STOP")
 
-
-if __name__.endswith('__main__'):
-    gen = arbGenerator()
-    print(gen.gen.__dict__.keys())
-    print(gen.gen._trigger_outputs)
-    for t in gen.gen._trigger_outputs:
-        print(t.name)
-
-    #print(gen.gen.IDKIND_SERIALNUMBER)
