@@ -61,6 +61,7 @@ class MyUi(Ui_MainWindow):
     countRemainingToSave = 0
 
     soundPlayed = False
+    ProbePower = 1 #calculated mean probe power to be used for stabilization
 
 
     """Initialize the app"""
@@ -381,9 +382,9 @@ class MyUi(Ui_MainWindow):
 
     def plotSCP(self):
 
-        if self.tabWidget.currentIndex() == 2: # Monitor tab
+        if self.tabWidget.currentIndex() == 2:  # Monitor tab
             return self.plotSCPMonitor()
-        if self.tabWidget.currentIndex() != 0:  # Data tab
+        if self.tabWidget.currentIndex() not in [0, 3]:  # Data tab or Stabilization/Lock
             return
 
         if isinstance(self.SCPData, bool):
@@ -443,10 +444,12 @@ class MyUi(Ui_MainWindow):
         # print(tSel)
         mvValsCH1 = np.array(self.SCPData[0])[tSel]
         meanProbe = np.mean(mvValsCH1)
+        self.ProbePower = meanProbe + self.doubleSpinBox_SignalOffset.value()
 
-        textMean=pg.TextItem(f"{(1e3*(meanProbe+self.doubleSpinBox_SignalOffset.value())):.2f}")
+        textMean=pg.TextItem(f"{(1e3*(self.ProbePower)):.2f}")
         textMean.setPos(self.doubleSpinBox_TotalTime_ms.value()*.9, vr[1][1])
         self.ch1Plot.addItem(textMean)
+        self.label_ProbePowerValue.setText(f"{(1e3*(self.ProbePower)):.2f} mV")
 
 
 
@@ -943,19 +946,22 @@ class MyUi(Ui_MainWindow):
     def loadSettings(self, file='settings.zg.npy'):
 
         # load settings
-        settings = np.load(file)
-        # print(settings)
-        for setting in settings:
-            o = self.__getattribute__(setting[0])
-            if setting[2] == "QtWidgets.QDoubleSpinBox":
-                o.setValue(float(setting[1]))
-            if setting[2] == "QtWidgets.QComboBox":
-                o.setCurrentIndex(int(setting[1]))
-            # if setting[2] == "QtWidgets.QRadioButton":
-            #    o.setChecked(setting[1] in ['true', 'True'])
-            if setting[2] == "QtWidgets.QLineEdit":
-                o.setText(setting[1])
-        print("Settings applied!")
+        try:
+            settings = np.load(file)
+            # print(settings)
+            for setting in settings:
+                o = self.__getattribute__(setting[0])
+                if setting[2] == "QtWidgets.QDoubleSpinBox":
+                    o.setValue(float(setting[1]))
+                if setting[2] == "QtWidgets.QComboBox":
+                    o.setCurrentIndex(int(setting[1]))
+                # if setting[2] == "QtWidgets.QRadioButton":
+                #    o.setChecked(setting[1] in ['true', 'True'])
+                if setting[2] == "QtWidgets.QLineEdit":
+                    o.setText(setting[1])
+            print("Settings applied!")
+        except Exception as e:
+            print(f"Load settings exception: {e.__str__()}")
 
     def actionSave_settings_handler(self):
         file, type = self.selectFilename(use='save', type="Settings file (*.zg.npy)")
