@@ -39,6 +39,7 @@ import libtiepie
 from playsound import playsound  # pip install playsound
 #import traceback
 import collections
+from scipy.interpolate import CubicSpline
 
 import class_MySerial as myserial
 
@@ -72,6 +73,9 @@ class MyUi(Ui_MainWindow):
     probeStabOut = collections.deque(maxlen=500)
     probeStabError = collections.deque(maxlen=500)
     probeStabTimestamp = collections.deque(maxlen=500)
+    VCSELLOut = collections.deque(maxlen=500)
+    VCSELLTimestamp = collections.deque(maxlen=500)
+
 
 
 
@@ -118,9 +122,13 @@ class MyUi(Ui_MainWindow):
         self.doubleSpinBox_RecordsToSave.valueChanged.connect(self.saveRecordsChanged)
 
         self.doubleSpinBox_stabProbePowerOut.valueChanged.connect(self.stabProbePowerOutChanged)
+        self.doubleSpinBox_stabVCSELLOut.valueChanged.connect(self.stabVCSELLOutChanged)
 
         self.actionSave_settings.triggered.connect(self.actionSave_settings_handler)
         self.actionLoad_settings.triggered.connect(self.actionLoad_settings_handler)
+
+        self.pushButton_SaveVCSELLSpectrum.clicked.connect(self.saveVCSELLSpectrum)
+        self.pushButton_LoadVCSELLSpectrum.clicked.connect(self.loadVCSELLSpectrum)
 
         elements = [self.doubleSpinBox_PumpLevel,
                     self.doubleSpinBox_ProbeLevel,
@@ -169,6 +177,10 @@ class MyUi(Ui_MainWindow):
         PG_layout_vcsell = pg.GraphicsLayout()  # make layout for plots
 
         self.vcsellSpectrumPlot = PG_layout_vcsell.addPlot()
+        PG_layout_vcsell.nextRow()
+        self.vcsellOutPlot = PG_layout_vcsell.addPlot()
+        PG_layout_vcsell.nextRow()
+        self.vcsellCorrPlot = PG_layout_vcsell.addPlot()
         self.vcsellPlot_Window.setCentralItem(PG_layout_vcsell)  # set layout to the widget
 
         # make stab/Lock plot widget and layout
@@ -201,7 +213,7 @@ class MyUi(Ui_MainWindow):
         self.ch2Plot = PG_layout.addPlot()
 
         self.plotWindow.setCentralItem(PG_layout)  # set layout to the widget
-        for chkbox in [self.checkBox_SaveData, self.checkBox_StabProbePower, self.checkBox_VCSELLStab]:
+        for chkbox in [self.checkBox_SaveData]:  # , self.checkBox_StabProbePower, self.checkBox_VCSELLStab
             chkbox.setStyleSheet("QCheckBox::indicator { width: 70; height: 70;}")
 
         containing_layout = self.FITPlotPlaceholder.parent().layout()
@@ -262,6 +274,9 @@ class MyUi(Ui_MainWindow):
         self.plainTextEdit_ESP32SerialLog.appendHtml(
             f"<font color=green>PORT: {self.esp32.port} status: {self.esp32.status}</font>")
         self.updateConnectionInfo()
+
+        self.MAX11300out(self.doubleSpinBox_stabVCSELLOut.value(), ch=1)
+        self.MAX11300out(self.doubleSpinBox_stabProbePowerOut.value(), ch=0)
 
 
     def scpWorkerStart(self, worker):
@@ -498,25 +513,39 @@ class MyUi(Ui_MainWindow):
 
     def stabilizeVCSELL(self):
         #print("stab VCSELL")
+
+        #print("stab VCSELL is ON")
+        self.doubleSpinBox_stabVCSELLOut.setReadOnly(True)
+        onePumpPeriod = 1.0 / self.doubleSpinBox_Frequency_Hz.value()
+        nPumpPeriods = int(self.doubleSpinBox_PumpTime_ms.value()/1000 / onePumpPeriod)
+        points = self.doubleSpinBox_Samples.value()  # no of samples in a scp block
+        totaltime= self.doubleSpinBox_TotalTime_ms.value()/1000
+        samplePumpPeriod = points * onePumpPeriod/totaltime
+        stop = int(nPumpPeriods * samplePumpPeriod + self.doubleSpinBox_stabSpectrumShift.value())
+        start = int(stop - samplePumpPeriod)
+        #print(f"{onePumpPeriod=}   {nPumpPeriods=}")
+        #print(f"{start=}   {stop=}")
+        spectrum = self.SCPData[1][start:stop]  # CH2 data
+        t = 1000* np.linspace(0, onePumpPeriod, len(spectrum), endpoint=False)
+        #print(f"{spectrum=}")
+
+        # spline to have always same number of points
+        num = 140
+        x = np.linspace(0, num, num=len(spectrum), endpoint=False)
+        cs = CubicSpline(x, spectrum)
+        xs = np.linspace(0, num, num=num, endpoint=False)
+        spectrumSpline = cs(xs)
+
+        self.vcsellSpectrumPlot.clear()
+        self.vcsellSpectrumPlot.plot(xs, spectrumSpline)
+        self.vcsellSpectrumPlot.setLabel('left', "VCSELL spectrum")
+        self.vcsellSpectrumPlot.setLabel('bottom', "#")
+
         if self.checkBox_VCSELLStab.isChecked() and self.esp32.box.writable():
-            #print("stab VCSELL is ON")
-            self.doubleSpinBox_stabVCSELLOut.setReadOnly(True)
-            onePumpPeriod = 1.0 / self.doubleSpinBox_Frequency_Hz.value()
-            nPumpPeriods = int(self.doubleSpinBox_PumpTime_ms.value()/1000 / onePumpPeriod)
-            points = self.doubleSpinBox_Samples.value()  # no of samples in a scp block
-            totaltime= self.doubleSpinBox_TotalTime_ms.value()/1000
-            samplePumpPeriod = points * onePumpPeriod/totaltime
-            stop = int(nPumpPeriods * samplePumpPeriod + self.doubleSpinBox_stabSpectrumShift.value())
-            start = int(stop - samplePumpPeriod)
-            #print(f"{onePumpPeriod=}   {nPumpPeriods=}")
-            #print(f"{start=}   {stop=}")
-            spectrum = self.SCPData[1][start:stop]  # CH2 data
-            t = 1000* np.linspace(0, onePumpPeriod, len(spectrum), endpoint=False)
-            #print(f"{spectrum=}")
-            self.vcsellSpectrumPlot.clear()
-            self.vcsellSpectrumPlot.plot(t, spectrum)
-            self.vcsellSpectrumPlot.setLabel('left', "VCSELL spectrum")
-            self.vcsellSpectrumPlot.setLabel('bottom', "time (ms)")
+
+            self.VCSELLOut.append(self.doubleSpinBox_stabVCSELLOut.value())
+            self.VCSELLTimestamp.append(time.time())
+            self.vcsellOutPlot.plot(self.VCSELLTimestamp, self.VCSELLOut)
 
         else:
             self.doubleSpinBox_stabVCSELLOut.setReadOnly(False)
@@ -550,11 +579,14 @@ class MyUi(Ui_MainWindow):
 
         else:
             self.doubleSpinBox_stabProbePowerOut.setReadOnly(False)
-
-        while self.esp32.box.in_waiting > 0:
-            line=self.esp32.readLine()
-            if not line.strip() == '':
-                self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font color=pink>esp32: {line}</font>")
+        try:
+            while self.esp32.box.in_waiting > 0:
+                line=self.esp32.readLine()
+                if not line.strip() == '':
+                    self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font color=pink>esp32: {line}</font>")
+        except Exception as e:
+            print(f"func:stabilizeProbe: {e}")
+            self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font color=red>unable to receive data</font>")
 
     def plotProbePowerStab(self):
 
@@ -904,6 +936,9 @@ class MyUi(Ui_MainWindow):
         # if stabilization is ON do nothing
         self.MAX11300out(self.doubleSpinBox_stabProbePowerOut.value(), ch=0)
 
+    def stabVCSELLOutChanged(self):
+        self.MAX11300out(self.doubleSpinBox_stabVCSELLOut.value(), ch=1)
+
     def updateCR(self):
         start, stop = self.FFTFilteredDataPlotFIT_lr.getRegion()
         self.FFTdataPlotFIT_lr.setRegion([start, stop])
@@ -1108,14 +1143,35 @@ class MyUi(Ui_MainWindow):
         self.label_SerialPortName.setText(self.esp32.port)
         self.label_SerialPortBaud.setText(str(self.esp32.baud))
 
+    def saveVCSELLSpectrum(self):
+        directory = "./spectrums/" + self.lineEdit_SpectrumLabel.text()
+        try:
+            os.mkdir(directory)
+        except Exception as e:
+            print(f"{e}")
+        if os.path.exists(directory):
+            # directory exists - save
+            spectrum = self.vcsellSpectrumPlot.listDataItems()[0].yData
+            delta = self.doubleSpinBox_PumpLevel.value() - self.doubleSpinBox_ZeroLevel.value()
+
+            fileName = f"{directory}/{self.doubleSpinBox_stabSpectrumSaveNo.value():.0f}_{self.doubleSpinBox_stabVCSELLOut.value():.4f}_{delta:.4f}.npy"
+            np.save(fileName, spectrum)
+        else:
+            print(f"Directory {directory} is not found")
+            return False
+
+
+
+    def loadVCSELLSpectrum(self):
+        pass
 
     def MAX11300out(self,value, range=[-5,5], ch=0):
-        if value<range[0] or value>range[1]:
+        if value < range[0] or value > range[1]:
             print(f"value {value} out of range {range}")
             self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=red>value {value} out of range {range}</font>")
         r = range[1]-range[0]
         step = r/2**12
-        binout =int( (value-range[0])/step)
+        binout = int((value-range[0])/step)
         self.esp32.sendToBox(f"set {ch} {binout}")
         self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=white>set {ch} {binout} -> {value=}</font>")
 
