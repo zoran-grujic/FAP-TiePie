@@ -23,7 +23,7 @@ from PyQt5 import QtGui
 # pip install pyqtgraph
 import pyqtgraph as pg  # Fast plot package
 import numpy as np
-from scipy import signal
+from scipy import signal, stats
 import time
 from datetime import datetime
 from scipy.optimize import curve_fit
@@ -40,6 +40,7 @@ from playsound import playsound  # pip install playsound
 #import traceback
 import collections
 from scipy.interpolate import CubicSpline
+import glob
 
 import class_MySerial as myserial
 
@@ -75,7 +76,7 @@ class MyUi(Ui_MainWindow):
     probeStabTimestamp = collections.deque(maxlen=500)
     VCSELLOut = collections.deque(maxlen=500)
     VCSELLTimestamp = collections.deque(maxlen=500)
-
+    VCSELLSpectrumLoaded = [False, False]
 
 
 
@@ -114,6 +115,7 @@ class MyUi(Ui_MainWindow):
     """
     def setupUi(self, MainWindow):
         super(MyUi, self).setupUi(MainWindow)  # call function of the parent class
+        self.refreshSpectrumFolderCombo() # should be performed before loading settings
         self.loadSettings()
 
         self.okButton_GeneratorStart.clicked.connect(self.genStartStop)
@@ -278,7 +280,18 @@ class MyUi(Ui_MainWindow):
         self.MAX11300out(self.doubleSpinBox_stabVCSELLOut.value(), ch=1)
         self.MAX11300out(self.doubleSpinBox_stabProbePowerOut.value(), ch=0)
 
+        self.loadVCSELLSpectrum()
 
+
+
+
+    def refreshSpectrumFolderCombo(self):
+        #fl = glob.glob("./spectrums/*")
+        fl = subfolders = [  os.path.basename(f.path) for f in os.scandir("./spectrums/") if f.is_dir() ]
+        self.comboBox_SelectVCSELLSpectrum.clear()
+        self.comboBox_SelectVCSELLSpectrum.addItems(fl)
+
+        #self.comboBox_SelectVCSELLSpectrum
     def scpWorkerStart(self, worker):
 
         print("Boot SCP")
@@ -526,10 +539,10 @@ class MyUi(Ui_MainWindow):
         #print(f"{onePumpPeriod=}   {nPumpPeriods=}")
         #print(f"{start=}   {stop=}")
         spectrum = self.SCPData[1][start:stop]  # CH2 data
-        t = 1000* np.linspace(0, onePumpPeriod, len(spectrum), endpoint=False)
+        #t = 1000* np.linspace(0, onePumpPeriod, len(spectrum), endpoint=False)
         #print(f"{spectrum=}")
 
-        # spline to have always same number of points
+        # spline to have always same number of 140 points
         num = 140
         x = np.linspace(0, num, num=len(spectrum), endpoint=False)
         cs = CubicSpline(x, spectrum)
@@ -541,11 +554,34 @@ class MyUi(Ui_MainWindow):
         self.vcsellSpectrumPlot.setLabel('left', "VCSELL spectrum")
         self.vcsellSpectrumPlot.setLabel('bottom', "#")
 
+        # correlate spectrums
+        key, data = self.VCSELLSpectrumLoaded
+        corr = np.zeros(len(key))
+        for i, sp in enumerate(data):
+            p = stats.pearsonr(spectrumSpline, sp)
+            corr[i] = p.statistic
+
+        self.vcsellCorrPlot.clear()
+        lineCorr = self.vcsellCorrPlot.plot(key[:,0], corr, symbol='o')
+        lineCorr.setSymbolSize(5)
+        maxIndex = corr.argmax()
+        error = key[maxIndex,0] - self.doubleSpinBox_setVCSELL.value()
+        il = pg.InfiniteLine(key[maxIndex,0])
+        self.vcsellCorrPlot.addItem(il)
+        self.label_LaserError.setText(f"{error:.2f}")
+
         if self.checkBox_VCSELLStab.isChecked() and self.esp32.box.writable():
 
             self.VCSELLOut.append(self.doubleSpinBox_stabVCSELLOut.value())
             self.VCSELLTimestamp.append(time.time())
-            self.vcsellOutPlot.plot(self.VCSELLTimestamp, self.VCSELLOut)
+            t = np.array(self.VCSELLTimestamp)
+            t = t[0] - t
+            self.vcsellOutPlot.clear()
+            self.vcsellOutPlot.plot(t, self.VCSELLOut)
+
+            integral = self.doubleSpinBox_StabVCSELL_I.value() * error/1e5
+            setval = self.doubleSpinBox_stabVCSELLOut.value() - integral
+            self.doubleSpinBox_stabVCSELLOut.setValue(setval)
 
         else:
             self.doubleSpinBox_stabVCSELLOut.setReadOnly(False)
@@ -1147,6 +1183,7 @@ class MyUi(Ui_MainWindow):
         directory = "./spectrums/" + self.lineEdit_SpectrumLabel.text()
         try:
             os.mkdir(directory)
+            self.refreshSpectrumFolderCombo()
         except Exception as e:
             print(f"{e}")
         if os.path.exists(directory):
@@ -1163,15 +1200,36 @@ class MyUi(Ui_MainWindow):
 
 
     def loadVCSELLSpectrum(self):
-        pass
 
-    def MAX11300out(self,value, range=[-5,5], ch=0):
-        if value < range[0] or value > range[1]:
-            print(f"value {value} out of range {range}")
-            self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=red>value {value} out of range {range}</font>")
-        r = range[1]-range[0]
+        directory = "./spectrums/" + self.comboBox_SelectVCSELLSpectrum.currentText()+"/"
+        fileNames = glob.glob(directory+"*.npy")
+        data = np.zeros((len(fileNames), 140))
+        key = np.zeros((len(fileNames), 3))
+
+        for i, file in enumerate(fileNames):
+            basename = os.path.basename(file)[:-4]
+            fs = basename.split("_")
+            key[i, 0], key[i, 1], key[i, 2] = int(fs[0]), float(fs[1]), float(fs[2])
+            data[i] = np.load(file)
+
+        sorted_key = key[:, 1].argsort()
+        key = key[sorted_key]
+        data = data[sorted_key]
+        
+        # chk if zero - pump difference is OK
+        if self.doubleSpinBox_PumpLevel.value() - self.doubleSpinBox_ZeroLevel.value() != key[0,2]:
+            print("Need to adjust pump level")
+            self.doubleSpinBox_PumpLevel.setValue(key[0,2] + self.doubleSpinBox_ZeroLevel)
+
+        self.VCSELLSpectrumLoaded = key, data
+
+    def MAX11300out(self, value, v_range=[-5, 5], ch=0):
+        if value < v_range[0] or value > v_range[1]:
+            print(f"value {value} out of range {v_range}")
+            self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=red>value {value} out of range {v_range}</font>")
+        r = v_range[1] - v_range[0]
         step = r/2**12
-        binout = int((value-range[0])/step)
+        binout = int((value - v_range[0]) / step)
         self.esp32.sendToBox(f"set {ch} {binout}")
         self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=white>set {ch} {binout} -> {value=}</font>")
 
