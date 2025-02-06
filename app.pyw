@@ -483,7 +483,7 @@ class MyUi(Ui_MainWindow):
         self.ch1Plot_lr.setRegion((rst,rst+1))
         self.ch1Plot.addItem(self.ch1Plot_lr)
 
-        self.ch1Plot_lrM.setRegion((self.doubleSpinBox_TotalTime_ms.value()-1, self.doubleSpinBox_TotalTime_ms.value()))
+        self.ch1Plot_lrM.setRegion((self.doubleSpinBox_TotalTime_ms.value()-5, self.doubleSpinBox_TotalTime_ms.value()))
         self.ch1Plot.addItem(self.ch1Plot_lrM)
 
         # get signal amplitude
@@ -558,8 +558,11 @@ class MyUi(Ui_MainWindow):
         key, data = self.VCSELLSpectrumLoaded
         corr = np.zeros(len(key))
         for i, sp in enumerate(data):
-            p = stats.pearsonr(spectrumSpline, sp)
-            corr[i] = p.statistic
+            try:
+                p = stats.pearsonr(spectrumSpline, sp)
+                corr[i] = p.statistic
+            except:
+                corr[i] = 0
 
         self.vcsellCorrPlot.clear()
         lineCorr = self.vcsellCorrPlot.plot(key[:,0], corr, symbol='o')
@@ -1219,7 +1222,7 @@ class MyUi(Ui_MainWindow):
         # chk if zero - pump difference is OK
         if self.doubleSpinBox_PumpLevel.value() - self.doubleSpinBox_ZeroLevel.value() != key[0,2]:
             print("Need to adjust pump level")
-            self.doubleSpinBox_PumpLevel.setValue(key[0,2] + self.doubleSpinBox_ZeroLevel)
+            self.doubleSpinBox_PumpLevel.setValue(key[0,2] + self.doubleSpinBox_ZeroLevel.value())
 
         self.VCSELLSpectrumLoaded = key, data
 
