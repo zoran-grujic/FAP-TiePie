@@ -277,6 +277,20 @@ class MyUi(Ui_MainWindow):
             f"<font color=green>PORT: {self.esp32.port} status: {self.esp32.status}</font>")
         self.updateConnectionInfo()
 
+        # change CH parameters on the data tab
+        elements = [
+            self.checkBox_VRangeScan,
+            self.checkBox_AmplitudeRangeScan,
+            self.doubleSpinBox_scan_minOutV,
+            self.doubleSpinBox_scan_maxOutV,
+            self.doubleSpinBox_VScanIntervals,
+            self.doubleSpinBox_scan_minAmplitude,
+            self.doubleSpinBox_scan_maxAmplitude,
+            self.doubleSpinBox_AmplitudeScanIntervals
+        ]
+        for el in elements:
+            self.connectElementTo(el, self.ScanValuesGenerate)
+
         self.MAX11300out(self.doubleSpinBox_stabVCSELLOut.value(), ch=1)
         self.MAX11300out(self.doubleSpinBox_stabProbePowerOut.value(), ch=0)
 
@@ -1237,6 +1251,39 @@ class MyUi(Ui_MainWindow):
         binout = int((value - v_range[0]) / step)
         self.esp32.sendToBox(f"set {ch} {binout}")
         self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font=white>set {ch} {binout} -> {value=}</font>")
+
+
+    def ScanDetuningVoltageGenerate(self):
+        scan_detuning_voltages = np.linspace(self.doubleSpinBox_scan_minOutV.value(), self.doubleSpinBox_scan_maxOutV.value(), int(self.doubleSpinBox_VScanIntervals.value()))
+        return scan_detuning_voltages
+    def ScanAmplitudesGenerate(self):
+        scan_pump_amplitudes = np.linspace(self.doubleSpinBox_scan_minAmplitude.value(), self.doubleSpinBox_scan_maxAmplitude.value(),int( self.doubleSpinBox_AmplitudeScanIntervals.value()))
+        return scan_pump_amplitudes
+    def ScanValuesGenerate(self, scan_amplitudes):
+
+        if self.checkBox_VRangeScan.isChecked():
+            scan_detuning_voltages = self.ScanDetuningVoltageGenerate()
+        else:
+            scan_detuning_voltages=np.array([self.doubleSpinBox_stabVCSELLOut.value()])
+
+        if self.checkBox_AmplitudeRangeScan.isChecked():
+            scan_pump_amplitudes = self.ScanAmplitudesGenerate()
+        else:
+            scan_pump_amplitudes = np.array([self.doubleSpinBox_PumpLevel.value()-self.doubleSpinBox_ZeroLevel.value()])
+
+        mean_pump = np.mean([self.doubleSpinBox_PumpLevel.value(), self.doubleSpinBox_ZeroLevel.value()])
+
+        scan_pump = mean_pump + scan_pump_amplitudes / 2
+        scan_zero = mean_pump - scan_pump_amplitudes / 2
+
+        scan_values=[]
+        for sa in scan_detuning_voltages:
+            for sp in zip(scan_pump, scan_zero):
+                scan_values.append([sa,sp[0],sp[1]])
+        print("Novo")
+        print (scan_values)
+
+        pass
 
 
 ##############################################################################################
