@@ -1851,19 +1851,6 @@ f: 2568.258</string>
            <string>Serial connection info</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_19">
-           <item row="1" column="0">
-            <widget class="QPlainTextEdit" name="plainTextEdit_ESP32SerialLog">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="maximumBlockCount">
-              <number>50</number>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_18">
              <item row="0" column="0">
@@ -1897,17 +1884,65 @@ f: 2568.258</string>
             </layout>
            </item>
            <item row="2" column="0">
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+            <widget class="QGroupBox" name="groupBox_ScanLock">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+             <property name="title">
+              <string>GroupBox</string>
              </property>
-            </spacer>
+             <layout class="QGridLayout" name="gridLayout_24">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_21">
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_setVCSELL_2">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-10.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_54">
+                  <property name="text">
+                   <string>Save spectrum #</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPlainTextEdit" name="plainTextEdit_ESP32SerialLog">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="maximumBlockCount">
+              <number>50</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

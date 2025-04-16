@@ -18,8 +18,8 @@ import os
 import logging
 from PyQt5 import QtCore  # conda install pyqt // pip install PyQt5==5.15.0
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget
-from PyQt5 import QtGui
+#from PyQt5.QtWidgets import QMessageBox, QWidget
+#from PyQt5 import QtGui
 # pip install pyqtgraph
 import pyqtgraph as pg  # Fast plot package
 import numpy as np
@@ -478,9 +478,11 @@ class MyUi(Ui_MainWindow):
         self.ch1Plot.addItem(grid)
         vr = self.ch1Plot.getViewBox().viewRange()
 
-
-        rst= self.doubleSpinBox_PumpTime_ms.value()+.5
-        self.ch1Plot_lr.setRegion((rst,rst+1))
+        # Region for amplitude estimation
+        rst = self.doubleSpinBox_PumpTime_ms.value()+.5
+        if rst + 1 > self.doubleSpinBox_TotalTime_ms.value():
+            rst = self.doubleSpinBox_TotalTime_ms.value()-2
+        self.ch1Plot_lr.setRegion((rst, rst+1))
         self.ch1Plot.addItem(self.ch1Plot_lr)
 
         self.ch1Plot_lrM.setRegion((self.doubleSpinBox_TotalTime_ms.value()-5, self.doubleSpinBox_TotalTime_ms.value()))

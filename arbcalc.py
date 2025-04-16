@@ -45,7 +45,10 @@ class arbcalc():
         nProbe = nPumpPeriods + self.dutyCycle - 1
         nProbe = int(self.noPoints * nProbe * onePumpPeriod / self.totalTime)
         for n in range(nProbe, self.noPoints):
-            self.data[n] = self.probeLevel
+            if self.totalTime <= self.pumpTime:
+                self.data[n] = self.zeroLevel
+            else:
+                self.data[n] = self.probeLevel
 
         return self.t, self.data
 
@@ -63,7 +66,10 @@ class arbcalc():
             nProbe = nPumpPeriods + self.dutyCycle - 1
             nProbe = int(self.noPoints * nProbe * onePumpPeriod / self.totalTime)
             for n in range(nProbe, self.noPoints):
-                self.data[n] = self.probeLevel
+                if self.totalTime <= self.pumpTime:
+                    self.data[n] = self.zeroLevel
+                else:
+                    self.data[n] = self.probeLevel
 
         else:
             upTime = onePumpPeriod * self.dutyCycle
