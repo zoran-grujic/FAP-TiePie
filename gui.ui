@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1205</width>
-    <height>885</height>
+    <width>1209</width>
+    <height>894</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1892,18 +1892,79 @@ f: 2568.258</string>
               </sizepolicy>
              </property>
              <property name="title">
-              <string>GroupBox</string>
+              <string>Voltage Scan Parameters</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_24">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <layout class="QGridLayout" name="gridLayout_21">
-                <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_setVCSELL_2">
+                <property name="horizontalSpacing">
+                 <number>7</number>
+                </property>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_scan_maxOutV">
                   <property name="suffix">
                    <string/>
                   </property>
                   <property name="decimals">
-                   <number>1</number>
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-10.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="VScanStep">
+                  <property name="text">
+                   <string>Voltage Scan no.Steps</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="Max_output_V_2">
+                  <property name="text">
+                   <string>Max. Output V</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_VScanIntervals">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>0</number>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>50.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_scan_minOutV">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>5</number>
                   </property>
                   <property name="minimum">
                    <double>-10.000000000000000</double>
@@ -1920,13 +1981,20 @@ f: 2568.258</string>
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="label_54">
+                 <widget class="QLabel" name="Min_output_V">
                   <property name="text">
-                   <string>Save spectrum #</string>
+                   <string>Min. Output V</string>
                   </property>
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="checkBox_VRangeScan">
+                <property name="text">
+                 <string>Voltage Range Scan</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1942,6 +2010,126 @@ f: 2568.258</string>
              <property name="maximumBlockCount">
               <number>50</number>
              </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox_11">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Amplitude Scan Parameters</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_27">
+              <item row="2" column="0">
+               <widget class="QPushButton" name="RangeScanSave">
+                <property name="text">
+                 <string>Range Scan + Save</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <layout class="QGridLayout" name="gridLayout_26">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="Min_Pump_Level">
+                  <property name="text">
+                   <string>Min.Amplitude</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLabel" name="label_38">
+                  <property name="text">
+                   <string>Max.Amplitude</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="AScanStep_2">
+                  <property name="text">
+                   <string>Amplitude Scan No.Steps</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_scan_maxAmplitude">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_AmplitudeScanIntervals">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>0</number>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>50.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_scan_minAmplitude">
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="checkBox_AmplitudeRangeScan">
+                <property name="text">
+                 <string>Amplitude Range Scan</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -2477,8 +2665,8 @@ f: 2568.258</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1205</width>
-     <height>26</height>
+     <width>1209</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFAP">
