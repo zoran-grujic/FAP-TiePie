@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>images/ZG-Speach-Bubble-256x256-icon.png</normaloff>images/ZG-Speach-Bubble-256x256-icon.png</iconset>
+    <normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-256x256-icon.png</normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-256x256-icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -827,7 +827,7 @@
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>images/ZG-Speach-Bubble-256x256-icon.png</normaloff>images/ZG-Speach-Bubble-256x256-icon.png</iconset>
+                     <normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-256x256-icon.png</normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-256x256-icon.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1948,7 +1948,7 @@ f: 2568.258</string>
                    <double>1.000000000000000</double>
                   </property>
                   <property name="maximum">
-                   <double>50.000000000000000</double>
+                   <double>1000.000000000000000</double>
                   </property>
                   <property name="singleStep">
                    <double>1.000000000000000</double>
@@ -2024,12 +2024,41 @@ f: 2568.258</string>
               <string>Amplitude Scan Parameters</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_27">
-              <item row="2" column="0">
-               <widget class="QPushButton" name="RangeScanSave">
-                <property name="text">
-                 <string>Range Scan + Save</string>
-                </property>
-               </widget>
+              <item row="3" column="0">
+               <layout class="QGridLayout" name="gridLayout_25">
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_ScanWaitTime">
+                  <property name="toolTip">
+                   <string>Time from set to measure in seconds</string>
+                  </property>
+                  <property name="suffix">
+                   <string/>
+                  </property>
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="minimum">
+                   <double>0.100000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>50.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.100000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>1.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="AScanStep_3">
+                  <property name="text">
+                   <string>Wait time</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item row="1" column="0">
                <layout class="QGridLayout" name="gridLayout_26">
@@ -2129,6 +2158,13 @@ f: 2568.258</string>
                 </property>
                </widget>
               </item>
+              <item row="4" column="0">
+               <widget class="QPushButton" name="okButton_RangeScanStart">
+                <property name="text">
+                 <string>Range Scan + Save</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -2206,7 +2242,7 @@ f: 2568.258</string>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>images/ZG-Speach-Bubble-16x16-icon.png</normaloff>images/ZG-Speach-Bubble-16x16-icon.png</iconset>
+                 <normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-16x16-icon.png</normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-16x16-icon.png</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -2472,31 +2508,24 @@ f: 2568.258</string>
            </item>
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_22">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Detuning</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_50">
+               <property name="text">
+                <string>Sample shift #</string>
+               </property>
+              </widget>
+             </item>
              <item row="3" column="0">
               <widget class="QLabel" name="label_47">
                <property name="text">
                 <string>I</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QLabel" name="label_49">
-               <property name="text">
-                <string>Output</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_46">
-               <property name="text">
-                <string>Error</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QCheckBox" name="checkBox_VCSELLStabInvertPID">
-               <property name="text">
-                <string>Invert PI?</string>
                </property>
               </widget>
              </item>
@@ -2507,71 +2536,13 @@ f: 2568.258</string>
                </property>
                <property name="icon">
                 <iconset>
-                 <normaloff>images/ZG-Speach-Bubble-16x16-icon.png</normaloff>images/ZG-Speach-Bubble-16x16-icon.png</iconset>
+                 <normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-16x16-icon.png</normaloff>../../Users/Zoran/.designer/backup/images/ZG-Speach-Bubble-16x16-icon.png</iconset>
                </property>
                <property name="iconSize">
                 <size>
                  <width>16</width>
                  <height>16</height>
                 </size>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_42">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_setVCSELL">
-               <property name="suffix">
-                <string/>
-               </property>
-               <property name="decimals">
-                <number>1</number>
-               </property>
-               <property name="minimum">
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>10.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>0.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_stabVCSELLOut">
-               <property name="suffix">
-                <string> V</string>
-               </property>
-               <property name="decimals">
-                <number>5</number>
-               </property>
-               <property name="minimum">
-                <double>-5.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>5.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.010000000000000</double>
-               </property>
-               <property name="value">
-                <double>0.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_43">
-               <property name="text">
-                <string>Detuning</string>
                </property>
               </widget>
              </item>
@@ -2604,17 +2575,53 @@ f: 2568.258</string>
                </property>
               </widget>
              </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_setVCSELL">
+               <property name="suffix">
+                <string/>
+               </property>
+               <property name="decimals">
+                <number>1</number>
+               </property>
+               <property name="minimum">
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_42">
+               <property name="text">
+                <string>Set value</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_46">
+               <property name="text">
+                <string>Error</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QCheckBox" name="checkBox_VCSELLStabInvertPID">
+               <property name="text">
+                <string>Invert PI?</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_VCSELLDetuningValue">
                <property name="text">
                 <string>Detuning value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_50">
-               <property name="text">
-                <string>Sample shift #</string>
                </property>
               </widget>
              </item>
@@ -2646,6 +2653,67 @@ f: 2568.258</string>
                </property>
               </widget>
              </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="label_54">
+               <property name="text">
+                <string>Trigger</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QLabel" name="label_49">
+               <property name="text">
+                <string>Output</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="comboBox_trigger">
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <property name="maxVisibleItems">
+                <number>4</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Generator</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>CH1</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>CH2</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_stabVCSELLOut">
+               <property name="suffix">
+                <string> V</string>
+               </property>
+               <property name="decimals">
+                <number>5</number>
+               </property>
+               <property name="minimum">
+                <double>-5.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.010000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item row="1" column="0">
@@ -2666,7 +2734,7 @@ f: 2568.258</string>
      <x>0</x>
      <y>0</y>
      <width>1209</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFAP">

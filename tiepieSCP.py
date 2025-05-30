@@ -8,6 +8,7 @@ import os
 import sys
 # pip install python-libtiepie
 import libtiepie
+from sympy.strategies.core import switch
 
 
 class oscilloscope:
@@ -19,6 +20,7 @@ class oscilloscope:
     }
     trigger_name = "Generator new period"
     channels = 0
+    status_settings_changed= False  # flag to indicate if settings were changed
 
     def __init__(self):
         # Search for devices:
@@ -67,89 +69,151 @@ class oscilloscope:
             record_length=1e5,
             CH_ranges=[8, 2, 2, 2],
             CH_couplings=["dc", "dc", "dc", "dc"],
+            trigger_source="Generator",
             ):
+        changed = False
         if self.scp is None:
             return False
         if self.scp.is_running and self.scp.measure_mode == libtiepie.MM_STREAM:
             # not controllable
             return False
+
+        # set scp parameters
         try:
             # Set measure mode:
             if mode == "block":
-                self.scp.measure_mode = libtiepie.MM_BLOCK
-                # print("set measure_mode BLOCK")
-
-                self.set_trigger()
-
+                if self.scp.measure_mode != libtiepie.MM_BLOCK:
+                    changed = True
+                    self.scp.measure_mode = libtiepie.MM_BLOCK
+                    # print("set measure_mode BLOCK")
             else:
                 # print("set measure_mode STREAM")
-                self.scp.measure_mode = libtiepie.MM_STREAM
+                if self.scp.measure_mode != libtiepie.MM_STREAM:
+                    changed = True
+                    # print("set measure_mode STREAM")
+                    # print("set trigger source: " + str(trigger_source))
+                    self.scp.measure_mode = libtiepie.MM_STREAM
+
+
 
             # set vertical resolution
             self.scp.resolution = 16  # set 16 bit vertical resolution
             # print("Sample frequency SET to:", self.scp.sample_rate)
 
             # Set record length:
-            self.scp.record_length = int(record_length)  # 10000 samples
+            if self.scp.record_length != int(record_length):
+                changed = True
+                # print("set record length: " + str(int(record_length)))
+                self.scp.record_length = int(record_length)  # 10000 samples
 
             # Set pre sample ratio:
             self.scp.pre_sample_ratio = 0  # 0 %
 
             # Set sample frequency:
-            self.scp.sample_rate = sample_rate  # 1 MHz
+            if self.scp.sample_rate != sample_rate:
+                changed = True
+                # print("set sample frequency: " + str(sample_rate))
+                self.scp.sample_rate = sample_rate  # 1 MHz
 
             # For all channels:
             for i, ch in enumerate(self.scp.channels):
                 # Enable channel to measure it:
-                ch.enabled = True
+                if not ch.enabled:
+                    changed = True
+                    # print("Enable channel: " + str(i))
+                    ch.enabled = True
                 # Set range
-                ch.range = CH_ranges[i]
+                if ch.range != CH_ranges[i]:
+                    changed = True
+                    ch.range = CH_ranges[i]
                 # Set coupling
                 if CH_couplings[i] == 'dc':
-                    ch.coupling = libtiepie.CK_DCV # DC Volt
+                    if ch.coupling != libtiepie.CK_DCV:
+                        changed = True
+                        ch.coupling = libtiepie.CK_DCV # DC Volt
                 else:
-                    ch.coupling = libtiepie.CK_ACV  # AC Volt
-            """   
-            CH1 = self.scp.channels[0]
-            CH2 = self.scp.channels[1]
+                    if ch.coupling != libtiepie.CK_ACV:
+                        changed = True
+                        ch.coupling = libtiepie.CK_ACV  # AC Volt
 
-            # Set range:
-            CH1.range = CH1_range
-            CH2.range = CH2_range
 
-            # Set coupling:
-            if CH1_coupling == 'dc':
-                CH1.coupling = libtiepie.CK_DCV  # DC Volt
-            else:
-                CH1.coupling = libtiepie.CK_ACV  # AC Volt
-            if CH2_coupling == 'dc':
-                CH2.coupling = libtiepie.CK_DCV  # DC Volt
-            else:
-                CH2.coupling = libtiepie.CK_ACV  # AC Volt
-            """
+            #self.set_trigger(trigger_source=trigger_source)
             # Set trigger timeout:
             self.scp.trigger.timeout = 1000e-3  # 100 ms
 
-            # Disable all channel trigger sources:
-            for ch in self.scp.channels:
-                ch.trigger.enabled = False
+            # find generator trigger input
+            try:
+                # Locate trigger input:
+                trigger_input_generator = self.scp.trigger_inputs.get_by_id(
+                    libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
+                # Set trigger timeout:
+                self.scp.trigger.timeout = 1000e-3  # 100 ms
 
-            if mode != "block":
-                # Setup channel trigger:
-                ch = self.scp.channels[0]  # Ch 1
+                if trigger_input_generator is None:
+                    raise Exception('Unknown trigger input!')
+            except Exception as e:
+                # self.trigger_name = "Generator new period"
+                for trigger_input_generator in self.scp.trigger_inputs:
+                    # print(f"{trigger_input_generator.id=} {trigger_input_generator.name= }")
+                    if trigger_input_generator.name.split(".")[-1] == self.trigger_name:
+                        break
 
-                # Enable trigger source:
-                ch.trigger.enabled = True
+            if trigger_source == "Generator":
+                # Enable trigger input:
+                if not trigger_input_generator.enabled:
+                    changed = True
+                    # print("Enable trigger input: " + str(trigger_input_generator.name))
+                    trigger_input_generator.enabled = True
+                for ch in self.scp.channels:
+                    if ch.trigger.enabled:
+                        changed = True
+                        # Disable channel trigger source:
+                        # print("Disable channel trigger source: " + str(ch.name))
+                        ch.trigger.enabled = False
+            else:
+                # Defaults:
+                #--------------------------------
+                for ch in self.scp.channels:
+                    # Kind:
+                    ch.trigger.kind = libtiepie.TK_RISINGEDGE  # Rising edge
 
-                # Kind:
-                ch.trigger.kind = libtiepie.TK_RISINGEDGE  # Rising edge
+                    # Trigger mode:
+                    ch.trigger.level_mode = libtiepie.TLM_ABSOLUTE
+                    # ch.trigger.level_mode = libtiepie.TLM_RELATIVE
 
-                # Level:
-                ch.trigger.levels[0] = 0.5  # 50 %
+                    # Level:
+                    ch.trigger.levels[0] = 0  # 50 %
 
-                # Hysteresis:
-                ch.trigger.hystereses[0] = 0.05  # 5 %
+                    # Hysteresis:
+                    ch.trigger.hystereses[0] = 0.05  # 5 %
 
+                #Variable parameters:
+                #--------------------------------
+                i = 0
+                match trigger_source:
+                    case "CH2":
+                        i = 1
+                    case "CH3":
+                        i = 2
+                    case "CH4":
+                        i = 3
+                for j, ch in enumerate(self.scp.channels):
+                    if ch.trigger.enabled and not j == i:
+                        changed = True
+                        # Disable channel trigger source:
+                        # print("Disable channel trigger source: " + str(ch.name))
+                        ch.trigger.enabled = False
+
+                    else:
+                        if j == i and not ch.enabled:
+                            changed = True
+                            # Enable trigger source:
+                            # print("Enable channel trigger source: " + str(ch.name))
+                            ch.trigger.enabled = True
+
+            print("Changed: " + str(changed))
+            self.status_settings_changed = False
+            self.status_settings_changed = changed
             return True
 
         except Exception as e:
@@ -187,13 +251,7 @@ class oscilloscope:
             # Get data:
             data = self.scp.get_data()
 
-        try:
-            self.scp.stop()
-        except Exception as e:
-            pass
-        return data
-
-    def set_trigger(self):
+    def set_trigger(self, trigger_source="Generator"):
 
         """
         Combined instrument inputs:
@@ -205,25 +263,93 @@ class oscilloscope:
         inp.id=18874370 inp.name='HS5-540XM(30553).Generator new period'
 
         """
+        #print("set trigger")
 
         try:
             # Locate trigger input:
-            trigger_input = self.scp.trigger_inputs.get_by_id(
+            trigger_input_generator = self.scp.trigger_inputs.get_by_id(
                 libtiepie.TIID_GENERATOR_NEW_PERIOD)  # or TIID_GENERATOR_START or TIID_GENERATOR_STOP
             # Set trigger timeout:
             self.scp.trigger.timeout = 1000e-3  # 100 ms
 
-            if trigger_input is None:
+            if trigger_input_generator is None:
                 raise Exception('Unknown trigger input!')
         except Exception as e:
             # self.trigger_name = "Generator new period"
-            for trigger_input in self.scp.trigger_inputs:
-                #print(f"{trigger_input.id=} {trigger_input.name= }")
-                if trigger_input.name.split(".")[-1] == self.trigger_name:
+            for trigger_input_generator in self.scp.trigger_inputs:
+                #print(f"{trigger_input_generator.id=} {trigger_input_generator.name= }")
+                if trigger_input_generator.name.split(".")[-1] == self.trigger_name:
                     break
 
+        # Disable all channel trigger sources:
+        for ch in self.scp.channels:
+            ch.trigger.enabled = False
+            ch.enabled = True
+        trigger_input_generator.enabled = False
+
+
+        if trigger_source == "Generator":
+            # Enable trigger input:
+            trigger_input_generator.enabled = True
+
+        else:
+            i = 0
+            match  trigger_source:
+                case "CH2":
+                    i = 1
+                case "CH3":
+                    i = 2
+                case "CH4":
+                    i = 3
+            ch = self.scp.channels[i]
+            # Enable trigger source:
+            ch.trigger.enabled = True
+
+            # Kind:
+            ch.trigger.kind = libtiepie.TK_RISINGEDGE  # Rising edge
+
+            # Trigger mode:
+            ch.trigger.level_mode = libtiepie.TLM_ABSOLUTE
+            #ch.trigger.level_mode = libtiepie.TLM_RELATIVE
+
+            # Level:
+            ch.trigger.levels[0] = 0  # 50 %
+
+            # Hysteresis:
+            ch.trigger.hystereses[0] = 0.05  # 5 %
+
+            print("Trigger source: " + str(ch) + " Enabled:  " + str(ch.trigger.enabled))
+            print("Trigger kind: " + str(ch.trigger.kind))
+
+            print(self.scp.__getstate__())
+
+            # Must restart the scope to apply the changes
+            # problem with QTworker
+            # To apply the changes we need to stop and start the scope
+            if self.scp.is_running:
+
+                while self.scp.is_running:
+                    try:
+                        self.scp.stop()
+                        sleep(0.05)
+                    except Exception as e:
+                        pass
+                while not self.scp.is_running:
+                    try:
+                        self.scp.start()
+                        sleep(0.05)
+                    except Exception as e:
+                        pass
+            else:
+                print("Scope is not running, no need to stop it.")
+                self.scp.start()
 
 
 
-        # Enable trigger input:
-        trigger_input.enabled = True
+        print("End of tiepieSCP.set_trigger trigger source to: " + trigger_source)
+
+
+
+
+
+

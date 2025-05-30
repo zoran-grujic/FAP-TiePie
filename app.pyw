@@ -54,6 +54,13 @@ class MyUi(Ui_MainWindow):
     vcsellPlot_Window = pg.GraphicsLayoutWidget()  # pg.GraphicsWindow()
     timerPlotSCP = QtCore.QTimer()
     timerStart = QtCore.QTimer()
+
+    timerScanSaveDelay = QtCore.QTimer()
+    scanRunning = False
+    scanIndex = 0
+    scan_values=[]
+    scan_results=[]
+
     rePlotInterval_ms = 100
     SCPData = False
     dataFITtab = False
@@ -101,6 +108,9 @@ class MyUi(Ui_MainWindow):
         self.timerStart.setInterval(1000)
         self.timerStart.timeout.connect(self.boot)
 
+        #self.okButton_RangeScanStart
+        #self.timerScanSaveDelay.setInterval(2000)
+
         self.theWorkerBlocks_enabled = True
 
         self.esp32 = myserial.MySerial()
@@ -119,7 +129,9 @@ class MyUi(Ui_MainWindow):
         self.loadSettings()
 
         self.okButton_GeneratorStart.clicked.connect(self.genStartStop)
+        self.okButton_RangeScanStart.clicked.connect(self.rangeScanStartStop)
         self.tabWidget.currentChanged.connect(self.tabChanged)
+        #self.pushButton_SaveScanToFile.clicked.connect(self.)
 
         self.doubleSpinBox_RecordsToSave.valueChanged.connect(self.saveRecordsChanged)
 
@@ -162,6 +174,7 @@ class MyUi(Ui_MainWindow):
         self.pushButton_Set_FIT_init.clicked.connect(self.copyFITtoInit)
         self.pushButton_SelectFolder.clicked.connect(self.selectFolder)
         self.lineEdit_FolderName.setText(os.getcwd()+"\\data\\")
+        self.comboBox_trigger.currentIndexChanged.connect(self.trigger_changed)
 
         # change CH parameters on the data tab
         elements = [
@@ -377,11 +390,17 @@ class MyUi(Ui_MainWindow):
                 # block mode
                 if scp.is_running and scp.measure_mode == libtiepie.MM_STREAM:
                     # change from STREAM to BLOCK
-                    scp.stop()
+
                     self.scpSet()
-                    scp.start()
+
+                    if self.scp.status_settings_changed:
+                        scp.stop()
+                        self.scpSet()
+                        scp.start()
                 else:
                     self.scpSet()  # set SCP parameters
+                    if scp.is_running:
+                        scp.stop()
                     scp.start()
                 # Wait for measurement to complete:
                 while not scp.is_data_ready:
@@ -513,7 +532,7 @@ class MyUi(Ui_MainWindow):
         min= np.min(filtered)
         max = np.max(filtered)
         amplitude = .92*(max-min)/2
-
+        self.amplitude = amplitude
         text = pg.TextItem(f"{(1e3*amplitude):.2f}")
         self.ch1Plot.addItem(text)
 
@@ -550,8 +569,16 @@ class MyUi(Ui_MainWindow):
         points = self.doubleSpinBox_Samples.value()  # no of samples in a scp block
         totaltime= self.doubleSpinBox_TotalTime_ms.value()/1000
         samplePumpPeriod = points * onePumpPeriod/totaltime
-        stop = int(nPumpPeriods * samplePumpPeriod + self.doubleSpinBox_stabSpectrumShift.value())
-        start = int(stop - samplePumpPeriod)
+
+        if self.comboBox_trigger.currentText()=="Generator":
+            stop = int(nPumpPeriods * samplePumpPeriod + self.doubleSpinBox_stabSpectrumShift.value())
+            start = int(stop - samplePumpPeriod)
+        else:
+            # if CH1 or CH2... we take first period.
+
+            stop = int(2 * samplePumpPeriod + self.doubleSpinBox_stabSpectrumShift.value())
+            start = int(stop - samplePumpPeriod)
+
         #print(f"{onePumpPeriod=}   {nPumpPeriods=}")
         #print(f"{start=}   {stop=}")
         spectrum = self.SCPData[1][start:stop]  # CH2 data
@@ -706,6 +733,7 @@ class MyUi(Ui_MainWindow):
                                 self.getCH3coupling(),
                                 self.getCH4coupling()
                             ],
+                            trigger_source=self.comboBox_trigger.currentText()
                             ):
             self.statusbar.showMessage("The oscilloscope is not controllable!", 2000)
             print("The oscilloscope is not controllable!")
@@ -841,6 +869,7 @@ class MyUi(Ui_MainWindow):
         self.dataPlotFIT.setLabel('left', "S", units='V')
 
         # cut the data
+
         nStartUnfiltered = int((self.doubleSpinBox_FilterStart_ms.value() * self.FITSampleRate) / 1000)
         nStopUnfiltered = int((self.doubleSpinBox_FilterStop_ms.value() * self.FITSampleRate) / 1000)
         self.unFilteredDataFit = self.dataFIT[nStartUnfiltered: nStopUnfiltered]
@@ -1259,7 +1288,7 @@ class MyUi(Ui_MainWindow):
     def ScanAmplitudesGenerate(self):
         scan_pump_amplitudes = np.linspace(self.doubleSpinBox_scan_minAmplitude.value(), self.doubleSpinBox_scan_maxAmplitude.value(),int( self.doubleSpinBox_AmplitudeScanIntervals.value()))
         return scan_pump_amplitudes
-    def ScanValuesGenerate(self, scan_amplitudes):
+    def ScanValuesGenerate(self):
 
         if self.checkBox_VRangeScan.isChecked():
             scan_detuning_voltages = self.ScanDetuningVoltageGenerate()
@@ -1283,8 +1312,149 @@ class MyUi(Ui_MainWindow):
         print("Novo")
         print (scan_values)
 
-        pass
+        return scan_values
 
+    def rangeScanStartStop(self):
+        print("rangeScanStartStop")
+
+        if not self.scanRunning:
+            # Open file dialog to choose folder
+            save_folder_path = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Folder to Save Files")
+
+            # Check if folder path is empty (user canceled the dialog)
+            if not save_folder_path:
+                return
+
+            # Store the folder path as a class attribute for later use
+            self.save_folder_path = save_folder_path
+
+            # Create the folder if it doesn't exist
+            if not os.path.exists(self.save_folder_path):
+                os.makedirs(self.save_folder_path)
+
+            self.scanRunning = True
+            self.scanIndex=0
+            self.okButton_RangeScanStart.setText("Stop Scan")
+            self.checkBox_VCSELLStab.setChecked(False)  # Uncheck checkbox
+
+            # Generate scan values and initialize results
+            self.scan_values = self.ScanValuesGenerate()
+            self.scan_results = []
+
+            # Set scanning parameters
+            self.scanSet()
+        else:
+            # Stop the scan
+            self.scanRunning = False
+            self.timerScanSaveDelay.stop()
+
+            # Append log message
+            self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font color='red'>Scan stopped!</font>")
+
+            # Change button text back to 'Start Scan'
+            self.okButton_RangeScanStart.setText("Start Scan")
+
+            return self.save_folder_path
+
+    def scanSet(self):
+        print("on_ScanSaveData")
+        if not self.scanRunning:
+            return
+
+        # set new values
+        stab_V, pump, zero = self.scan_values[self.scanIndex]
+        self.doubleSpinBox_PumpLevel.blockSignals(True)
+        self.doubleSpinBox_ZeroLevel.blockSignals(True)
+        self.doubleSpinBox_PumpLevel.setValue(pump)
+        self.doubleSpinBox_ZeroLevel.setValue(zero)
+        self.doubleSpinBox_stabVCSELLOut.setValue(stab_V)
+        self.doubleSpinBox_PumpLevel.blockSignals(False)
+        self.doubleSpinBox_ZeroLevel.blockSignals(False)
+        self.arbSet()
+
+        # start timer to do wait before measurement
+        self.timerScanSaveDelay.singleShot(int(self.doubleSpinBox_ScanWaitTime.value() * 1000), self.scanSave)
+
+    def scanSave(self):
+        # Collect data
+        self.plotSCP()  # Ensure amplitude is updated
+        scan_params = self.scan_values[self.scanIndex]
+        scan_params.append(self.amplitude * 1e-3)
+
+        # Ensure SCP data is available
+        if isinstance(self.SCPData, bool) or not self.SCPData:
+            self.statusbar.showMessage("No SCP data available for saving!", 2000)
+            return
+
+        # Use the saved folder path from rangeScanStartStop
+        if not hasattr(self, 'save_folder_path'):
+            self.statusbar.showMessage("No folder selected for saving files.", 2000)
+            return
+
+        folder_path = self.save_folder_path  # Use the saved folder path
+
+        # Ensure the folder exists, or create it
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        # Generate a unique file name based on scan parameters
+        stab_V, pump, zero, amplitude = scan_params
+        file_name = f"VStab_{stab_V:.5f}_Pump_{pump:.2f}_Zero_{zero:.2f}_Amp_{amplitude*1000:.7f}.npy"
+        file_path = os.path.join(folder_path, file_name)
+
+        try:
+            # Combine scan parameters and SCP data
+            data_to_save = {
+                "scan_params": scan_params,
+                "scp_data": self.SCPData
+            }
+
+            # Save the combined data
+            np.save(file_path, data_to_save)
+            self.statusbar.showMessage(f"Saved: {file_name}", 2000)
+        except Exception as e:
+            self.statusbar.showMessage(f"Error saving file: {e}", 2000)
+
+
+        try:
+            self.saveSettings(file=os.path.join(folder_path,
+                                                f"VStab_{stab_V:.5f}_Pump_{pump:.2f}_Zero_{zero:.2f}_Amp_{amplitude*1000:.7f}_settings.npy"))
+            print(f"Settings saved for scan: {file_name}")
+        except Exception as e:
+            print(f"Error saving settings file: {e}")
+            return
+        # Move to the next scan
+        self.scanIndex += 1
+        print(f"Remaining scans: {len(self.scan_values) - self.scanIndex}, Progress: {self.scanIndex}/{len(self.scan_values)}")
+        if self.scanIndex > len(self.scan_values) - 1:
+            self.plainTextEdit_ESP32SerialLog.appendHtml(f"<font color='red'>Scan ended!</font>")
+            print("Scan ended!")
+            self.okButton_RangeScanStart.setText("Start Scan")
+            self.scanRunning = False
+            return
+
+        # Set up the next scan
+        self.scanSet()
+
+    def saveScanResultsToFile(self):
+        if not self.scan_results:
+            self.statusbar.showMessage("No scan results to save!", 2000)
+            return
+
+        # Open file dialog to select save location
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            None, "Save Scan Results", "", "Numpy Files (*.npy);;All Files (*)"
+        )
+        if file_path:
+            try:
+                # Save the scan results to the selected file
+                np.save(file_path, np.array(self.scan_results))
+                self.statusbar.showMessage(f"Scan results saved to {file_path}", 2000)
+            except Exception as e:
+                self.statusbar.showMessage(f"Error saving file: {e}", 2000)
+
+    def trigger_changed(self):
+        self.scpSet()
 
 ##############################################################################################
 #
