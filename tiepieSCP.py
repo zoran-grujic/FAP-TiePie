@@ -67,32 +67,46 @@ class oscilloscope:
             mode="block",
             sample_rate=1e6,
             record_length=1e5,
-            CH_ranges=[8, 2, 2, 2],
-            CH_couplings=["dc", "dc", "dc", "dc"],
+            CH_ranges=None,
+            CH_couplings=None,
             trigger_source="Generator",
             ):
+        if CH_couplings is None:
+            CH_couplings = ["dc", "dc", "dc", "dc"]
+        if CH_ranges is None:
+            CH_ranges = [8, 2, 2, 2]
         changed = False
         if self.scp is None:
             return False
-        if self.scp.is_running and self.scp.measure_mode == libtiepie.MM_STREAM:
+        #if self.scp.is_running and self.scp.measure_mode == libtiepie.MM_STREAM:
             # not controllable
-            return False
+            #return False
 
         # set scp parameters
         try:
             # Set measure mode:
             if mode == "block":
                 if self.scp.measure_mode != libtiepie.MM_BLOCK:
-                    changed = True
                     self.scp.measure_mode = libtiepie.MM_BLOCK
                     # print("set measure_mode BLOCK")
+                    if self.scp.measure_mode == libtiepie.MM_BLOCK:
+                        changed = True
+                    else:
+                        print("Failed to set measure mode to BLOCK")
+                        #self.scp.measure_mode = libtiepie.MM_STREAM
+                        changed = True
             else:
                 # print("set measure_mode STREAM")
                 if self.scp.measure_mode != libtiepie.MM_STREAM:
-                    changed = True
                     # print("set measure_mode STREAM")
                     # print("set trigger source: " + str(trigger_source))
                     self.scp.measure_mode = libtiepie.MM_STREAM
+                    if self.scp.measure_mode == libtiepie.MM_STREAM:
+                        changed = True
+                    else:
+                        print("Failed to set measure mode to STREAM")
+                        #self.scp.measure_mode = libtiepie.MM_BLOCK
+                        changed = True
 
 
 
@@ -171,6 +185,8 @@ class oscilloscope:
                         # print("Disable channel trigger source: " + str(ch.name))
                         ch.trigger.enabled = False
             else:
+                # print("Set trigger source: " + str(trigger_source))
+                trigger_input_generator.enabled = False
                 # Defaults:
                 #--------------------------------
                 for ch in self.scp.channels:
@@ -197,24 +213,27 @@ class oscilloscope:
                         i = 2
                     case "CH4":
                         i = 3
+
                 for j, ch in enumerate(self.scp.channels):
-                    if ch.trigger.enabled and not j == i:
+                    #print(f"{j=}, {i=}, {ch=}")
+
+                    if ch.trigger.enabled and j != i:
                         changed = True
                         # Disable channel trigger source:
-                        # print("Disable channel trigger source: " + str(ch.name))
+                        #print("Disable channel trigger source: " + str(trigger_source))
                         ch.trigger.enabled = False
 
-                    else:
-                        if j == i and not ch.enabled:
-                            changed = True
-                            # Enable trigger source:
-                            # print("Enable channel trigger source: " + str(ch.name))
-                            ch.trigger.enabled = True
+                    if j == i and not ch.trigger.enabled:
+                        changed = True
+                        # Enable trigger source:
+                        print("Enable channel trigger source: " + str(trigger_source))
+                        ch.trigger.enabled = True
 
-            print("Changed: " + str(changed))
+
+            #print("Changed: " + str(changed))
             self.status_settings_changed = False
             self.status_settings_changed = changed
-            return True
+            return changed
 
         except Exception as e:
             print('Exception: ' + str(e))
@@ -331,13 +350,13 @@ class oscilloscope:
                 while self.scp.is_running:
                     try:
                         self.scp.stop()
-                        sleep(0.05)
+                        time.sleep(0.05)
                     except Exception as e:
                         pass
                 while not self.scp.is_running:
                     try:
                         self.scp.start()
-                        sleep(0.05)
+                        time.sleep(0.05)
                     except Exception as e:
                         pass
             else:

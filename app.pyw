@@ -276,9 +276,6 @@ class MyUi(Ui_MainWindow):
         # Set tab index
         self.tabWidget.setCurrentIndex(0)
 
-
-
-
         # Execute
         self.scpWorkerStart(self.theWorkerBlocks)
         self.timerPlotSCP.start()
@@ -309,7 +306,13 @@ class MyUi(Ui_MainWindow):
 
         self.loadVCSELLSpectrum()
 
-
+        # Update trigger sources based on channel count
+        trigger_sources = ["Generator"]
+        n_channels = len(self.scp.scp.channels)
+        for i in range(n_channels):
+            trigger_sources.append(f"CH{i + 1}")
+        self.comboBox_trigger.clear()
+        self.comboBox_trigger.addItems(trigger_sources)
 
 
     def refreshSpectrumFolderCombo(self):
@@ -391,12 +394,18 @@ class MyUi(Ui_MainWindow):
                 if scp.is_running and scp.measure_mode == libtiepie.MM_STREAM:
                     # change from STREAM to BLOCK
 
-                    self.scpSet()
+                    self.scpSet() # set
 
                     if self.scp.status_settings_changed:
                         scp.stop()
-                        self.scpSet()
+                        while scp.is_running:
+                            time.sleep(0.01)  # wait for stop
+                        print("SCP settings changed, stopped SCP")
+                        self.scpSet() #set when stooped
                         scp.start()
+                        while not scp.is_running:
+                            time.sleep(0.01)  # wait for start
+                        print("SCP started after settings changed")
                 else:
                     self.scpSet()  # set SCP parameters
                     if scp.is_running:
@@ -718,7 +727,7 @@ class MyUi(Ui_MainWindow):
         if self.radioButton_M_CH2AC.isChecked() != self.radioButton_CH2AC.isChecked():
             self.radioButton_CH2AC.toggle()
 
-        if not self.scp.set(mode=self.getSCPmode(),
+        status = self.scp.set(mode=self.getSCPmode(),
                             sample_rate=self.getSampleRate(),
                             record_length=int(self.doubleSpinBox_Samples.value()),
                             CH_ranges=[
@@ -734,9 +743,12 @@ class MyUi(Ui_MainWindow):
                                 self.getCH4coupling()
                             ],
                             trigger_source=self.comboBox_trigger.currentText()
-                            ):
-            self.statusbar.showMessage("The oscilloscope is not controllable!", 2000)
-            print("The oscilloscope is not controllable!")
+                            )
+        if not status:
+            #self.statusbar.showMessage("The oscilloscope is not controllable!", 2000)
+            #print("The oscilloscope is not controllable!")
+            pass
+        return status
 
     def getCH1coupling(self):
         if self.radioButton_M_CH1DC.isChecked():
